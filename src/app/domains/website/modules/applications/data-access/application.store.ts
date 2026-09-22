@@ -49,7 +49,8 @@ export const ApplicationStore = signalStore(
   withState(initialState),
   withProps(() => ({
     _http: inject(HttpClient),
-    _platformId: inject(PLATFORM_ID)
+    _platformId: inject(PLATFORM_ID),
+    _lastParticipantId: ''
   })),
   withMethods(({ _http, _platformId, isAlreadyApplied, ...store }) => ({
     initialize(kind: IApplicationStorageKind): void {
