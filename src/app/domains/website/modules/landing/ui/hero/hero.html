@@ -1,0 +1,44 @@
+<section class="relative isolate min-h-[80svh] overflow-hidden text-white" aria-labelledby="hero-title">
+  <div class="absolute inset-0 -z-30" aria-hidden="true">
+    <img [src]="heroImages[3]" alt="" class="size-full m object-cover" />
+  </div>
+  <div class="absolute inset-0 -z-20 bg-gray-950/75"></div>
+
+  <div
+    class="mx-auto flex min-h-[calc(100svh-5rem)] max-w-screen-2xl flex-col justify-center px-6 pb-24 pt-64 sm:px-8 lg:px-16 xl:px-28 2xl:px-36">
+    <p class="text-base font-semibold uppercase tracking-[0.18em] text-primary-300">
+      {{ festival.dates }} · {{ festival.location }}
+    </p>
+
+    <h1 id="hero-title" class="mt-7 max-w-4xl text-4xl lg:text-5xl font-bold leading-[1.2] tracking-tight text-white">
+      Les solutions congolaises au service de la <span class="text-primary-300">transformation</span> de la RDC
+    </h1>
+
+    <p class="mt-8 max-w-3xl text-xl leading-8 text-white/75">
+      Deux jours où ceux qui créent rencontrent ceux qui peuvent acheter, financer, recruter et déployer.
+      <strong class="text-white">{{ festival.promise }}</strong>
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-4">
+      <a mat-flat-button routerLink="/applications/volunteer">Devenir volontaire</a>
+      <a mat-stroked-button routerLink="/applications/committee" class="border-white! text-white!"
+        >Rejoindre le comité</a
+      >
+    </div>
+
+    <div class="mt-16 grid max-w-4xl overflow-hidden rounded-md bg-white/15 sm:grid-cols-3">
+      <div class="bg-black/35 sm:border-r border-gray-600 p-5 backdrop-blur-sm">
+        <p class="text-2xl font-bold">3 marchés</p>
+        <p class="mt-1 text-sm text-white/65">Solutions, talents et compétences</p>
+      </div>
+      <div class="bg-black/35 sm:border-r border-gray-600 p-5 backdrop-blur-sm">
+        <p class="text-2xl font-bold">8 expériences</p>
+        <p class="mt-1 text-sm text-white/65">Pour découvrir, apprendre et connecter</p>
+      </div>
+      <div class="bg-black/35 p-5 backdrop-blur-sm">
+        <p class="text-2xl font-bold">2 000+ participants</p>
+        <p class="mt-1 text-sm text-white/65">Acteurs de la transformation numérique</p>
+      </div>
+    </div>
+  </div>
+</section>

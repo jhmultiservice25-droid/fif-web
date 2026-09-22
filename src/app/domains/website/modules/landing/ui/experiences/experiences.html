@@ -1,0 +1,60 @@
+<section
+  class="relative isolate scroll-mt-24 overflow-hidden py-24 text-white sm:py-28"
+  id="experience"
+  aria-labelledby="experience-title">
+  <img src="/images/banner.jpg" alt="" class="absolute inset-0 -z-30 size-full object-cover object-center" />
+  <div class="absolute inset-0 -z-20 bg-gray-950/85"></div>
+  <div class="absolute inset-0 -z-10 bg-primary-950/55 mix-blend-color"></div>
+
+  <div class="mx-auto max-w-screen-2xl px-6 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+    <header class="grid items-end gap-8 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-8">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary-300">L'expérience FIF</p>
+        <h2
+          id="experience-title"
+          class="mt-7 max-w-5xl text-5xl font-bold leading-[1.02] tracking-[-0.04em] text-white sm:text-6xl">
+          Un festival,<br /><span class="text-primary-300">plusieurs expériences simultanées.</span>
+        </h2>
+      </div>
+
+      <div class="flex items-end gap-5 border-l border-white/25 pl-6 lg:col-span-4">
+        <span class="text-6xl font-bold leading-none tracking-[-0.06em] text-white sm:text-7xl">08</span>
+        <p class="max-w-40 pb-1 text-sm font-semibold uppercase tracking-[0.16em] text-white/65">
+          espaces pour découvrir, apprendre et connecter
+        </p>
+      </div>
+    </header>
+
+    <div class="mt-16 grid gap-px overflow-hidden border border-white/15 bg-white/15 sm:grid-cols-2 lg:grid-cols-4">
+      @for (experience of experiences; track experience.number) {
+        <mat-card
+          appearance="outlined"
+          class="group min-h-60 rounded-none! border-0! bg-gray-950/65! text-white! shadow-none! backdrop-blur-sm! transition-colors duration-300 hover:bg-primary-950/80!">
+          <mat-card-content class="flex h-full flex-col justify-between p-7! sm:p-8!">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold tracking-[0.2em] text-primary-300">{{ experience.number }}</span>
+              <span
+                class="h-px w-10 bg-white/25 transition-[width,background-color] duration-300 group-hover:w-16 group-hover:bg-primary-300"
+                aria-hidden="true"></span>
+            </div>
+
+            <div class="mt-12">
+              <h3 class="text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl">
+                {{ experience.title }}
+              </h3>
+              <p class="mt-4 leading-7 text-white/65 transition-colors duration-300 group-hover:text-white/80">
+                {{ experience.description }}
+              </p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+
+    <div class="mt-8 flex items-center gap-5" aria-hidden="true">
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-primary-300">Kinshasa · 2026</span>
+      <span class="h-px flex-1 bg-white/20"></span>
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">FIKIRI Innovation Festival</span>
+    </div>
+  </div>
+</section>

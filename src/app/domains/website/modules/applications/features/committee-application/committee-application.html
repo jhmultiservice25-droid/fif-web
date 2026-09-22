@@ -1,0 +1,239 @@
+<app-application-hero
+  eyebrow="FIF 2026 · Équipe d'organisation"
+  heading="Candidature au comité"
+  description="Mettez votre expertise au service de l'équipe qui construit le festival." />
+
+<section class="min-h-[40vh] bg-gray-50 px-6 py-16 sm:px-8 lg:px-16 lg:py-20">
+  <div class="mx-auto max-w-5xl">
+    @if (store.isSubmitted()) {
+      <div class="rounded-2xl border border-emerald-200 bg-white p-8 text-center shadow-sm sm:p-12">
+        <mat-icon class="text-emerald-600! size-14!" svgIcon="circle-check" />
+        <h2 class="mt-4 text-2xl font-bold text-gray-950">Candidature envoyée</h2>
+        <p class="mx-auto mt-3 max-w-xl text-gray-600">
+          Merci pour votre intérêt. Notre équipe examinera votre dossier et vous contactera à l'adresse indiquée.
+        </p>
+        <a mat-flat-button routerLink="/" class="mt-7">Retour à l'accueil</a>
+      </div>
+    } @else if (store.isAlreadyApplied()) {
+      <div class="rounded-2xl border border-primary-200 bg-white p-8 text-center shadow-sm sm:p-12">
+        <mat-icon class="text-primary-600! size-14!" svgIcon="circle-check" />
+        <h2 class="mt-4 text-2xl font-bold text-gray-950">Vous avez déjà postulé</h2>
+        <p class="mx-auto mt-3 max-w-xl text-gray-600">
+          Une candidature au comité a déjà été envoyée depuis cet appareil. Il n'est pas nécessaire de remplir le
+          formulaire une nouvelle fois...
+        </p>
+        <a mat-flat-button routerLink="/" class="mt-7">Retour à l'accueil</a>
+      </div>
+    } @else {
+      @if (store.error()) {
+        <app-message class="mb-6" title="Envoi impossible" [message]="store.error()" (dismissed)="store.clearError()" />
+      }
+      @if (polesResource.error()) {
+        <app-message
+          class="mb-6"
+          type="warning"
+          title="Postes indisponibles"
+          message="Le catalogue des postes n'a pas pu être chargé. Actualisez la page pour réessayer."
+          [dismissible]="false" />
+      }
+      <mat-stepper linear class="rounded-lg border border-gray-200 bg-white p-2 shadow-sm sm:p-6">
+        <mat-step [completed]="applicationForm.identity().valid()" label="Identité">
+          <div class="grid gap-5 py-7 sm:grid-cols-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Nom</mat-label>
+              <input matInput [formField]="applicationForm.identity.lastName" autocomplete="family-name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Postnom</mat-label><input matInput [formField]="applicationForm.identity.postnom" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Prénom</mat-label>
+              <input matInput [formField]="applicationForm.identity.firstName" autocomplete="given-name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Sexe</mat-label>
+              <mat-select
+                [value]="applicationForm.identity.sex().value()"
+                [disabled]="applicationForm.identity.sex().disabled()"
+                (selectionChange)="selectSex($event.value)">
+                <mat-option value="" disabled>Sélectionner</mat-option>
+                @for (option of sexOptions; track option.value) {
+                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Date de naissance</mat-label>
+              <input
+                matInput
+                [matDatepicker]="birthDatePicker"
+                [max]="today"
+                (dateChange)="onBirthDateSelected($event.value)" />
+              <mat-datepicker-toggle matIconSuffix [for]="birthDatePicker" />
+              <mat-datepicker #birthDatePicker />
+            </mat-form-field>
+            <mat-form-field appearance="outline"
+              ><mat-label>Ville</mat-label
+              ><input matInput [formField]="applicationForm.identity.city" autocomplete="address-level2"
+            /></mat-form-field>
+            <mat-form-field appearance="outline"
+              ><mat-label>WhatsApp</mat-label
+              ><input
+                matInput
+                type="tel"
+                [formField]="applicationForm.identity.whatsapp"
+                autocomplete="tel"
+                placeholder="+243…"
+            /></mat-form-field>
+            <mat-form-field appearance="outline"
+              ><mat-label>Adresse e-mail</mat-label
+              ><input matInput type="email" [formField]="applicationForm.identity.email" autocomplete="email"
+            /></mat-form-field>
+            <div class="sm:col-span-2 flex justify-end">
+              <button mat-flat-button matStepperNext type="button" [disabled]="applicationForm.identity().invalid()">
+                Continuer
+              </button>
+            </div>
+          </div>
+        </mat-step>
+
+        <mat-step [completed]="applicationForm.profile().valid()" label="Profil">
+          <div class="grid gap-5 py-7 sm:grid-cols-2">
+            <mat-form-field appearance="outline" class="sm:col-span-2"
+              ><mat-label>Poste principal</mat-label
+              ><mat-select
+                [value]="applicationForm.profile.primaryJobId().value()"
+                [disabled]="applicationForm.profile.primaryJobId().disabled()"
+                (selectionChange)="selectPrimaryJob($event.value)">
+                <mat-option value="" disabled>Sélectionner</mat-option>
+                @for (pole of poles(); track pole.id) {
+                  <mat-optgroup [label]="pole.name">
+                    @for (job of pole.jobs; track job.id) {
+                      <mat-option [value]="job.id">{{ job.title }}</mat-option>
+                    }
+                  </mat-optgroup>
+                }
+              </mat-select>
+              @if (polesResource.isLoading()) {
+                <mat-hint>Chargement des postes…</mat-hint>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="sm:col-span-2"
+              ><mat-label>Deuxième choix (facultatif)</mat-label
+              ><mat-select
+                [value]="applicationForm.profile.secondaryJobId().value()"
+                [disabled]="applicationForm.profile.secondaryJobId().disabled()"
+                (selectionChange)="selectSecondaryJob($event.value)">
+                <mat-option value="">Aucun</mat-option>
+                @for (pole of poles(); track pole.id) {
+                  <mat-optgroup [label]="pole.name">
+                    @for (job of pole.jobs; track job.id) {
+                      <mat-option
+                        [value]="job.id"
+                        [disabled]="job.id === applicationForm.profile.primaryJobId().value()">
+                        {{ job.title }}
+                      </mat-option>
+                    }
+                  </mat-optgroup>
+                }
+              </mat-select></mat-form-field
+            >
+            <mat-form-field appearance="outline"
+              ><mat-label>Niveau d'études</mat-label
+              ><mat-select
+                [value]="applicationForm.profile.educationLevel().value()"
+                [disabled]="applicationForm.profile.educationLevel().disabled()"
+                (selectionChange)="selectEducationLevel($event.value)">
+                <mat-option value="" disabled>Sélectionner</mat-option>
+                @for (option of educationOptions; track option.value) {
+                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                }
+              </mat-select></mat-form-field
+            >
+            <mat-form-field appearance="outline"
+              ><mat-label>Domaine d'études</mat-label
+              ><input matInput [formField]="applicationForm.profile.fieldOfStudy"
+            /></mat-form-field>
+            <mat-form-field appearance="outline"
+              ><mat-label>Situation professionnelle</mat-label
+              ><mat-select
+                [value]="applicationForm.profile.professionalSituation().value()"
+                [disabled]="applicationForm.profile.professionalSituation().disabled()"
+                (selectionChange)="selectProfessionalSituation($event.value)">
+                <mat-option value="" disabled>Sélectionner</mat-option>
+                @for (option of professionalOptions; track option.value) {
+                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                }
+              </mat-select></mat-form-field
+            >
+            <mat-form-field appearance="outline"
+              ><mat-label>Années d'expérience</mat-label
+              ><input matInput type="number" [formField]="applicationForm.profile.yearsOfExperience"
+            /></mat-form-field>
+            <mat-form-field appearance="outline" class="sm:col-span-2"
+              ><mat-label>Profil LinkedIn (facultatif)</mat-label
+              ><input
+                matInput
+                type="url"
+                [formField]="applicationForm.profile.linkedin"
+                placeholder="https://linkedin.com/in/…"
+            /></mat-form-field>
+            <div class="sm:col-span-2 flex justify-between">
+              <button mat-button matStepperPrevious type="button">Retour</button
+              ><button mat-flat-button matStepperNext type="button" [disabled]="applicationForm.profile().invalid()">
+                Continuer
+              </button>
+            </div>
+          </div>
+        </mat-step>
+
+        <mat-step [completed]="applicationForm.commitment().valid()" label="Engagement">
+          <form (submit)="onSubmit(); $event.preventDefault()" class="grid gap-5 py-7">
+            <mat-form-field appearance="outline"
+              ><mat-label>Pourquoi souhaitez-vous rejoindre le comité ?</mat-label
+              ><textarea matInput [formField]="applicationForm.commitment.motivation" rows="5"></textarea
+              ><mat-hint>20 caractères minimum</mat-hint></mat-form-field
+            >
+            <mat-form-field appearance="outline"
+              ><mat-label>Expérience pertinente</mat-label
+              ><textarea matInput [formField]="applicationForm.commitment.experience" rows="4"></textarea>
+            </mat-form-field>
+            <mat-form-field appearance="outline"
+              ><mat-label>Disponibilité</mat-label
+              ><textarea
+                matInput
+                [formField]="applicationForm.commitment.availability"
+                rows="3"
+                placeholder="Précisez vos jours, horaires et votre disponibilité jusqu'au festival"></textarea>
+            </mat-form-field>
+            <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-5">
+              <p class="font-semibold text-gray-900">CV au format PDF</p>
+              <p class="mt-1 text-sm text-gray-500">Taille maximale : 5 Mo</p>
+              <label class="mt-4 inline-flex cursor-pointer"
+                ><input
+                  class="sr-only"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  (change)="onFileSelected($event)" /><span mat-stroked-button
+                  ><mat-icon svgIcon="upload" /> Choisir un fichier</span
+                ></label
+              >
+              @if (selectedFileName()) {
+                <p class="mt-3 text-sm font-medium text-primary-700">{{ selectedFileName() }}</p>
+              }
+              @if (applicationForm.commitment.cv().touched() && applicationForm.commitment.cv().invalid()) {
+                <p class="mt-3 text-sm text-error-600">{{ applicationForm.commitment.cv().errors()[0].message }}</p>
+              }
+            </div>
+            <div class="flex justify-between">
+              <button mat-button matStepperPrevious type="button">Retour</button
+              ><button mat-flat-button type="submit" [disabled]="applicationForm().invalid() || store.isLoading()">
+                {{ store.isLoading() ? 'Envoi…' : 'Envoyer ma candidature' }}
+              </button>
+            </div>
+          </form>
+        </mat-step>
+      </mat-stepper>
+    }
+  </div>
+</section>

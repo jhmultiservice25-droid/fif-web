@@ -1,0 +1,35 @@
+<div class="p-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold">Correspondances marketplace</h1>
+      <p class="mt-1 text-sm text-gray-500">Vue staff des correspondances calculées.</p>
+    </div>
+    <button matButton="filled" [disabled]="store.isUpdating()" (click)="computeAll()">
+      {{ store.isUpdating() ? 'Calcul…' : 'Recalculer tout' }}
+    </button>
+  </div>
+
+  @if (store.error()) {
+    <app-message class="mt-4" type="error" title="Erreur" [message]="store.error()" (dismissed)="store.clearError()" />
+  }
+
+  @if (matchesResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else if (matchesResource.hasValue() && matchesResource.value().data.length) {
+    <div class="mt-6 grid gap-4">
+      @for (match of matchesResource.value().data; track match.id) {
+        <mat-card class="p-5">
+          <div class="flex items-center justify-between">
+            <span class="text-xl font-semibold text-primary-700">{{ match.score }}/100</span>
+            <span class="text-xs text-gray-400">{{ match.needId }} ↔ {{ match.projectId }}</span>
+          </div>
+          <p class="mt-2 text-sm">{{ match.rationale }}</p>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <mat-card class="mt-6 p-8 text-center">
+      <p class="text-gray-500">Aucune correspondance enregistrée.</p>
+    </mat-card>
+  }
+</div>

@@ -1,0 +1,196 @@
+<div class="px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <a matButton routerLink="/admin/applications" class="mb-6">
+    <mat-icon svgIcon="arrow-left" />
+    Toutes les candidatures
+  </a>
+
+  @if (applicationResource.isLoading()) {
+    <mat-card appearance="outlined" class="flex min-h-80 items-center justify-center">
+      <div class="animate-pulse text-neutral-500">Chargement de la candidature…</div>
+    </mat-card>
+  } @else if (application(); as application) {
+    <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <div class="mb-2 text-sm font-medium text-primary-700">
+          {{ application.kind === 'COMMITTEE' ? 'Candidature au comité' : 'Candidature volontaire' }}
+        </div>
+        <h1 class="text-3xl font-semibold tracking-tight">
+          {{ application.firstName }} {{ application.postnom }} {{ application.lastName }}
+        </h1>
+        <p class="mt-1 text-neutral-500">Reçue le {{ formatDate(application.createdAt) }}</p>
+      </div>
+      <span class="w-fit rounded-full bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-800">
+        {{ statusLabel(application.status) }}
+      </span>
+    </div>
+
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
+      <div class="flex flex-col gap-6">
+        <mat-card appearance="outlined">
+          <mat-card-header><mat-card-title>Coordonnées</mat-card-title></mat-card-header>
+          <mat-card-content class="grid gap-5 pt-5 sm:grid-cols-2">
+            <div>
+              <div class="text-sm text-neutral-500">E-mail</div>
+              <div class="font-medium">{{ application.email }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-neutral-500">WhatsApp</div>
+              <div class="font-medium">{{ application.whatsapp }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-neutral-500">Ville</div>
+              <div class="font-medium">{{ application.city }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-neutral-500">Sexe</div>
+              <div class="font-medium">{{ application.sex }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-neutral-500">Date de naissance</div>
+              <div class="font-medium">{{ formatDate(application.birthDate, true) }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-neutral-500">Niveau d'études</div>
+              <div class="font-medium">{{ application.educationLevel }}</div>
+            </div>
+            <div class="sm:col-span-2">
+              <div class="text-sm text-neutral-500">Domaine d'études</div>
+              <div class="font-medium">{{ application.fieldOfStudy }}</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card appearance="outlined">
+          <mat-card-header><mat-card-title>Profil et motivation</mat-card-title></mat-card-header>
+          <mat-card-content class="flex flex-col gap-5 pt-5">
+            @if (application.kind === 'COMMITTEE') {
+              <div>
+                <div class="text-sm text-neutral-500">Poste principal</div>
+                <div class="font-medium">{{ application.primaryJob.title }}</div>
+              </div>
+              @if (application.secondaryJob; as secondaryJob) {
+                <div>
+                  <div class="text-sm text-neutral-500">Second choix</div>
+                  <div class="font-medium">{{ secondaryJob.title }}</div>
+                </div>
+              }
+              <div>
+                <div class="text-sm text-neutral-500">Situation professionnelle</div>
+                <div class="font-medium">{{ application.professionalSituation }}</div>
+              </div>
+              <div>
+                <div class="text-sm text-neutral-500">Années d'expérience</div>
+                <div class="font-medium">{{ application.yearsOfExperience }}</div>
+              </div>
+              <div>
+                <div class="text-sm text-neutral-500">Expérience pertinente</div>
+                <p class="whitespace-pre-line">{{ application.experience }}</p>
+              </div>
+              @if (application.linkedin) {
+                <div>
+                  <div class="text-sm text-neutral-500">LinkedIn</div>
+                  <a class="text-primary-700 underline" [href]="application.linkedin" target="_blank" rel="noopener">{{
+                    application.linkedin
+                  }}</a>
+                </div>
+              }
+            } @else {
+              <div>
+                <div class="text-sm text-neutral-500">Équipe principale</div>
+                <div class="font-medium">{{ application.primaryTeamId }}</div>
+              </div>
+              @if (application.organization) {
+                <div>
+                  <div class="text-sm text-neutral-500">Organisation</div>
+                  <div class="font-medium">{{ application.organization }}</div>
+                </div>
+              }
+              @if (application.skills) {
+                <div>
+                  <div class="text-sm text-neutral-500">Compétences</div>
+                  <p class="whitespace-pre-line">{{ application.skills }}</p>
+                </div>
+              }
+              <div>
+                <div class="text-sm text-neutral-500">Langues</div>
+                <p>{{ application.languages }}</p>
+              </div>
+              @if (application.eventExperience) {
+                <div>
+                  <div class="text-sm text-neutral-500">Expérience événementielle</div>
+                  <p class="whitespace-pre-line">{{ application.eventExperience }}</p>
+                </div>
+              }
+            }
+            <mat-divider />
+            <div>
+              <div class="text-sm text-neutral-500">Disponibilité</div>
+              <p class="whitespace-pre-line">{{ application.availability }}</p>
+            </div>
+            <div>
+              <div class="text-sm text-neutral-500">Motivation</div>
+              <p class="whitespace-pre-line">{{ application.motivation }}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <mat-card appearance="outlined" class="h-fit xl:sticky xl:top-6">
+        <mat-card-header>
+          <mat-card-title>Traitement</mat-card-title>
+          <mat-card-subtitle>Modifier le statut et l'affectation.</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="pt-5">
+          @if (store.error()) {
+            <app-message
+              class="mb-4"
+              type="error"
+              title="Mise à jour impossible"
+              [message]="store.error()"
+              (dismissed)="store.clearError()" />
+          }
+          <form class="flex flex-col gap-4" (submit)="save(); $event.preventDefault()">
+            <mat-form-field appearance="outline">
+              <mat-label>Statut</mat-label>
+              <mat-select [formField]="updateForm.status">
+                @for (option of statusOptions(); track option.value) {
+                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            @if (application.kind === 'VOLUNTEER') {
+              <mat-form-field appearance="outline">
+                <mat-label>Équipe affectée</mat-label>
+                <mat-select [formField]="updateForm.assignmentTeamId">
+                  <mat-option value="">Non renseignée</mat-option>
+                  @for (team of teamOptions; track team.id) {
+                    <mat-option [value]="team.id">{{ team.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline"
+                ><mat-label>Zone</mat-label><input matInput [formField]="updateForm.assignmentZone"
+              /></mat-form-field>
+              <mat-form-field appearance="outline"
+                ><mat-label>Responsable</mat-label><input matInput [formField]="updateForm.assignmentLead"
+              /></mat-form-field>
+              <mat-form-field appearance="outline"
+                ><mat-label>Horaire</mat-label><input matInput [formField]="updateForm.assignmentShift"
+              /></mat-form-field>
+            }
+            <button matButton="filled" type="submit" [disabled]="store.isUpdating()">
+              <mat-icon svgIcon="save" />
+              {{ store.isUpdating() ? 'Enregistrement…' : 'Enregistrer' }}
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  } @else {
+    <div class="flex min-h-64 flex-col items-center justify-center gap-4 text-center">
+      <mat-icon svgIcon="triangle-alert" />
+      <p>Cette candidature est introuvable ou ne peut pas être chargée.</p>
+      <button matButton="outlined" type="button" (click)="applicationResource.reload()">Réessayer</button>
+    </div>
+  }
+</div>

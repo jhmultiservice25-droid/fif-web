@@ -1,0 +1,20 @@
+<section
+  class="relative isolate flex min-h-[65svh] items-end overflow-hidden text-white"
+  [attr.aria-labelledby]="'application-title'">
+  <img src="/images/volunteer.jpg" alt="" class="absolute inset-0 -z-30 size-full object-cover object-center" />
+  <div class="absolute inset-0 -z-10 bg-gray-950/75"></div>
+
+  <div class="mx-auto w-full max-w-screen-2xl px-6 pb-16 pt-40 sm:px-8 lg:px-16 lg:pb-20 xl:px-24 2xl:px-32">
+    <a mat-button matButton="outlined" routerLink="/" class="text-white!">
+      <mat-icon svgIcon="arrow-left" />
+      Retour à l'accueil.
+    </a>
+    <p class="mt-8 font-semibold uppercase tracking-[0.18em] text-primary-300">{{ eyebrow() }}</p>
+    <h1
+      id="application-title"
+      class="mt-4 max-w-4xl text-4xl font-bold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl">
+      {{ heading() }}
+    </h1>
+    <p class="mt-6 max-w-3xl text-lg leading-8 text-white/75 sm:text-xl">{{ description() }}</p>
+  </div>
+</section>

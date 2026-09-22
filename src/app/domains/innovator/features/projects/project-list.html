@@ -1,0 +1,43 @@
+<div class="mx-auto max-w-5xl p-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold">Projets</h1>
+      <p class="mt-1 text-sm text-gray-500">Présentez vos solutions pour les mettre en correspondance avec des besoins concrets.</p>
+    </div>
+    <a matButton="filled" routerLink="/innovateur/projets/nouveau">
+      <mat-icon svgIcon="plus" />
+      Nouveau projet
+    </a>
+  </div>
+
+  @if (projectsResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else if (projectsResource.hasValue() && projectsResource.value().data.length) {
+    <div class="mt-6 grid gap-4">
+      @for (project of projectsResource.value().data; track project.id) {
+        <mat-card class="p-5">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-medium">{{ project.title || 'Sans titre' }}</h2>
+              <p class="mt-1 text-sm text-gray-500">Mis à jour le {{ formatDate(project.updatedAt) }}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">{{ statusLabel(project.status) }}</span>
+              <span class="rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700">
+                {{ consentLabel(project.publicationConsent) }}
+              </span>
+            </div>
+          </div>
+          <div class="mt-4">
+            <a matButton="outlined" [routerLink]="['/innovateur/projets', project.id]">Modifier</a>
+          </div>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <mat-card class="mt-6 p-8 text-center">
+      <p class="text-gray-500">Aucun projet pour le moment. Créez votre premier projet.</p>
+      <a matButton="filled" class="mt-4" routerLink="/innovateur/projets/nouveau">Créer un projet</a>
+    </mat-card>
+  }
+</div>

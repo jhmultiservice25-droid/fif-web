@@ -1,0 +1,80 @@
+<div class="mx-auto max-w-3xl p-6">
+  <h1 class="text-2xl font-semibold">{{ isNew() ? 'Nouveau projet' : 'Modifier le projet' }}</h1>
+  <p class="mt-1 text-sm text-gray-500">Seuls les projets soumis avec consentement NAMED ou ANONYMOUS participent au matching.</p>
+
+  @if (store.error()) {
+    <app-message class="mt-4" type="error" title="Erreur" [message]="store.error()" (dismissed)="store.clearError()" />
+  }
+
+  @if (!isNew() && projectResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else {
+    <form class="mt-6 flex flex-col gap-4" (submit)="save(); $event.preventDefault()">
+      <mat-form-field appearance="outline">
+        <mat-label>Titre du projet</mat-label>
+        <input matInput [formField]="projectForm.title" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Problème adressé</mat-label>
+        <textarea matInput rows="3" [formField]="projectForm.problemSolved"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Solution proposée</mat-label>
+        <textarea matInput rows="3" [formField]="projectForm.solution"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Secteurs</mat-label>
+        <mat-select [formField]="projectForm.sectors" multiple>
+          @for (option of catalogStore.sectors(); track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Capacités</mat-label>
+        <mat-select [formField]="projectForm.capabilities" multiple>
+          @for (option of catalogStore.projectCapabilities(); track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Stade du projet</mat-label>
+          <mat-select [formField]="projectForm.stage">
+            @for (option of catalogStore.projectStages(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Consentement de publication</mat-label>
+          <mat-select [formField]="projectForm.publicationConsent">
+            @for (option of catalogStore.publicationConsents(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <button matButton="outlined" type="submit" [disabled]="store.isSaving() || projectForm().invalid()">
+          {{ store.isSaving() ? 'Enregistrement…' : 'Enregistrer le brouillon' }}
+        </button>
+        <button
+          matButton="filled"
+          type="button"
+          [disabled]="store.isSaving() || projectForm().invalid()"
+          (click)="save(true)">
+          Soumettre
+        </button>
+      </div>
+    </form>
+  }
+</div>

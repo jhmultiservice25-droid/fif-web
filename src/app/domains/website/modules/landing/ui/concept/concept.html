@@ -1,0 +1,63 @@
+<section class="scroll-mt-24 overflow-hidden bg-white" id="concept" aria-labelledby="concept-title">
+  <div class="mx-auto max-w-screen-2xl px-6 py-24 sm:px-8 sm:py-28 lg:px-16 xl:px-24 2xl:px-32">
+    <div class="grid items-stretch lg:grid-cols-12">
+      <header
+        class="scroll-reveal scroll-reveal-from-left flex flex-col justify-center bg-white pb-14 lg:col-span-4 lg:pr-14 lg:pb-0 xl:pr-20">
+        <h2
+          id="concept-title"
+          class="mt-7 max-w-xl text-4xl font-bold leading-[0.98] tracking-[-0.045em] text-gray-950 sm:text-6xl xl:text-7xl">
+          Trois marchés.<br />Un même rendez-vous.
+        </h2>
+        <div class="mt-9 h-1 w-20 bg-primary-600"></div>
+        <p class="mt-9 max-w-md text-gray-600">
+          Le FIF réunit au même endroit l'offre numérique congolaise, les compétences qui la construisent et les jeunes
+          qui veulent apprendre.
+        </p>
+      </header>
+
+      <div class="lg:col-span-8">
+        <div class="scroll-reveal scroll-reveal-from-right grid min-h-72 grid-cols-3 sm:min-h-80">
+          <div class="grid grid-rows-2">
+            <div class="flex flex-col justify-between bg-primary-700 p-5 text-white sm:p-7">
+              <span class="text-xs font-semibold uppercase tracking-[0.2em] text-primary-200">FIKIRI</span>
+              <span class="text-4xl font-bold tracking-tight sm:text-5xl">2026</span>
+            </div>
+            <div class="flex items-end bg-primary-50 p-5 sm:p-7">
+              <p class="text-sm font-semibold uppercase tracking-[0.16em] text-primary-800">Kinshasa · RDC</p>
+            </div>
+          </div>
+
+          <figure class="relative col-span-2 overflow-hidden bg-primary-950">
+            <img
+              src="/images/hero.jpg"
+              alt="Un exposant congolais présente une création locale lors d'un événement"
+              class="absolute inset-0 size-full object-cover object-center grayscale" />
+            <div class="absolute inset-0 bg-primary-950/45 mix-blend-color" aria-hidden="true"></div>
+            <figcaption
+              class="absolute right-5 bottom-5 left-5 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 sm:right-7 sm:bottom-7 sm:left-7">
+              Construire · Connecter · Transmettre
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="grid border-x border-b border-gray-200 md:grid-cols-3 md:divide-x md:divide-gray-200">
+          @for (market of markets; track market.title) {
+            <mat-card
+              appearance="outlined"
+              class="scroll-reveal scroll-reveal-stagger group rounded-none! border-0! border-t! border-gray-200! bg-white! shadow-none! transition-colors duration-300 hover:bg-primary-50! md:border-t-0!">
+              <mat-card-content class="flex h-full flex-col p-6 sm:p-7">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary-700">{{ market.kicker }}</p>
+                <h3 class="mt-8 text-xl font-bold leading-tight tracking-tight text-gray-950">{{ market.title }}</h3>
+                <div
+                  class="mt-5 h-0.5 w-10 bg-primary-500 transition-[width] duration-300 group-hover:w-16"
+                  aria-hidden="true"></div>
+                <p class="mt-5 text-sm font-semibold leading-6 text-primary-800">{{ market.actions }}</p>
+                <p class="mt-4 text-sm leading-6 text-gray-600">{{ market.description }}</p>
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

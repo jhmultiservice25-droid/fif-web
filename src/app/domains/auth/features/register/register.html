@@ -1,0 +1,56 @@
+<section>
+  <h1 class="text-3xl font-semibold tracking-tight">{{ title() }}</h1>
+  <p class="mb-6 mt-2 text-sm text-gray-500">{{ subtitle() }}</p>
+
+  @if (store.error()) {
+    <app-message
+      class="mb-5"
+      type="error"
+      title="Inscription impossible"
+      [message]="store.error()"
+      (dismissed)="store.clearError()" />
+  }
+
+  <form class="flex flex-col gap-4" (submit)="onRegister(); $event.preventDefault()">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ kind() === 'organization' ? 'Nom de l’organisation' : 'Nom ou pseudo' }}</mat-label>
+      <input matInput [formField]="registerForm.name" autocomplete="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Adresse e-mail</mat-label>
+      <input matInput type="email" [formField]="registerForm.email" autocomplete="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Mot de passe</mat-label>
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        [formField]="registerForm.password"
+        autocomplete="new-password" />
+      <mat-hint>Au moins 8 caractères</mat-hint>
+      <button
+        matIconButton
+        matSuffix
+        type="button"
+        [attr.aria-label]="hidePassword ? 'Afficher le mot de passe' : 'Masquer le mot de passe'"
+        (click)="hidePassword = !hidePassword">
+        <mat-icon [svgIcon]="hidePassword ? 'eye' : 'eye-off'" />
+      </button>
+    </mat-form-field>
+
+    <button
+      matButton="filled"
+      [disabled]="store.isLoading() || registerForm().invalid()"
+      class="mt-4 w-full"
+      type="submit">
+      <span>{{ store.isLoading() ? 'Création…' : 'Créer mon compte' }}</span>
+    </button>
+  </form>
+
+  <p class="mt-6 text-center text-sm text-gray-500">
+    Déjà un compte ?
+    <a routerLink="/auth/connexion" class="font-medium text-primary-600 hover:underline">Se connecter</a>
+  </p>
+</section>

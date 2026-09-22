@@ -1,0 +1,157 @@
+<div class="mx-auto max-w-3xl p-6">
+  <h1 class="text-2xl font-semibold">{{ isNew() ? 'Nouvelle fiche de besoin' : 'Modifier la fiche' }}</h1>
+  <p class="mt-1 text-sm text-gray-500">
+    Les champs indexés alimentent le matching. Le consentement de publication détermine la visibilité de votre organisation.
+  </p>
+
+  @if (store.error()) {
+    <app-message class="mt-4" type="error" title="Erreur" [message]="store.error()" (dismissed)="store.clearError()" />
+  }
+
+  @if (!isNew() && needResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else {
+    <form class="mt-6 flex flex-col gap-4" (submit)="save(); $event.preventDefault()">
+      <mat-form-field appearance="outline">
+        <mat-label>Défi prioritaire (Q12)</mat-label>
+        <textarea matInput rows="3" [formField]="needForm.priorityChallenge"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Domaines du problème</mat-label>
+        <mat-select [formField]="needForm.problemDomains" multiple>
+          @for (option of catalogStore.problemDomains(); track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Types de solution recherchés</mat-label>
+        <mat-select [formField]="needForm.solutionTypes" multiple>
+          @for (option of catalogStore.solutionTypes(); track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Priorité</mat-label>
+          <mat-select [formField]="needForm.priority">
+            @for (option of catalogStore.priorityLevels(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Échéance</mat-label>
+          <mat-select [formField]="needForm.timeline">
+            @for (option of catalogStore.timelines(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Ouverture au pilote</mat-label>
+          <mat-select [formField]="needForm.pilotWillingness">
+            @for (option of catalogStore.yesMaybeNo(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Bande budgétaire</mat-label>
+          <mat-select [formField]="needForm.budgetBand">
+            @for (option of catalogStore.budgetBands(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Participation Fikiri Challenge</mat-label>
+        <mat-select [formField]="needForm.fikiriChallenge">
+          @for (option of catalogStore.fikiriChallenge(); track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Consentement de publication (Q35)</mat-label>
+        <mat-select [formField]="needForm.publicationConsent">
+          @for (option of catalogStore.publicationConsents(); track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+        <mat-hint>
+          NAMED/ANONYMOUS permettent le matching. ANONYMOUS masque le nom de votre organisation côté innovateur.
+        </mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Niveau de digitalisation</mat-label>
+        <mat-select [formField]="needForm.digitizationLevel">
+          @for (option of catalogStore.digitizationLevels(); track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description du défi</mat-label>
+        <textarea matInput rows="3" [formField]="needForm.challengeDescription"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Situation actuelle</mat-label>
+        <textarea matInput rows="3" [formField]="needForm.currentSituation"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Impact attendu</mat-label>
+        <textarea matInput rows="3" [formField]="needForm.expectedImpact"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Critères de succès</mat-label>
+        <textarea matInput rows="2" [formField]="needForm.successCriteria"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Parties prenantes</mat-label>
+        <textarea matInput rows="2" [formField]="needForm.stakeholders"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraintes</mat-label>
+        <textarea matInput rows="2" [formField]="needForm.constraints"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Informations complémentaires</mat-label>
+        <textarea matInput rows="2" [formField]="needForm.additionalInfo"></textarea>
+      </mat-form-field>
+
+      <div class="flex flex-wrap gap-3">
+        <button matButton="outlined" type="submit" [disabled]="store.isSaving() || needForm().invalid()">
+          {{ store.isSaving() ? 'Enregistrement…' : 'Enregistrer le brouillon' }}
+        </button>
+        <button
+          matButton="filled"
+          type="button"
+          [disabled]="store.isSaving() || needForm().invalid()"
+          (click)="save(true)">
+          Soumettre
+        </button>
+      </div>
+    </form>
+  }
+</div>

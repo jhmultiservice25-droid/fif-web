@@ -1,0 +1,164 @@
+<div class="px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <div class="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold tracking-tight">Vue d'ensemble</h1>
+      <p class="mt-1 text-neutral-500">Suivi des candidatures au comité et des volontaires.</p>
+    </div>
+    @if (statsResource.hasValue()) {
+      <button matButton="outlined" type="button" (click)="statsResource.reload()">
+        <mat-icon svgIcon="refresh-cw" />
+        Actualiser
+      </button>
+    }
+  </div>
+
+  @if (statsResource.isLoading()) {
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Chargement des statistiques">
+      @for (item of [1, 2, 3, 4]; track item) {
+        <mat-card appearance="filled" class="animate-pulse">
+          <mat-card-header>
+            <div class="h-4 w-28 rounded bg-neutral-300"></div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="h-12 w-20 rounded bg-neutral-300"></div>
+            <div class="mt-2 h-4 w-40 rounded bg-neutral-200"></div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2" aria-hidden="true">
+      @for (item of [1, 2, 3, 4]; track item) {
+        <mat-card appearance="filled" class="h-96 animate-pulse" />
+      }
+    </div>
+  } @else if (statsResource.hasValue()) {
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      @for (item of summary(); track item.title) {
+        <mat-card appearance="filled">
+          <mat-card-header>
+            <div class="flex items-center gap-x-2">
+              <mat-icon class="size-4" [svgIcon]="item.icon" />
+              <div class="font-medium tracking-tight">
+                {{ item.title }}
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="text-5xl font-semibold">
+              {{ item.value | number }}
+            </div>
+            <div class="mt-2 text-sm font-medium text-neutral-500">
+              {{ item.description }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+
+    <div class="mt-4 flex min-h-6 items-center justify-end text-sm">
+      @if (weekEvolution(); as evolution) {
+        <div
+          class="flex items-center gap-1 font-medium"
+          [class.text-green-700]="evolution >= 0"
+          [class.text-red-700]="evolution < 0">
+          <mat-icon class="size-4" [svgIcon]="evolution >= 0 ? 'trending-up' : 'trending-down'" />
+          {{ evolution | number: '1.0-1' }} % par rapport à la semaine dernière
+        </div>
+      } @else if (statsResource.value().data.thisWeek > 0) {
+        <div class="text-sm text-neutral-500">Premières candidatures enregistrées cette semaine</div>
+      }
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+      <mat-card appearance="filled" class="xl:col-span-2">
+        <mat-card-header>
+          <mat-card-title class="text-lg">Évolution des candidatures</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <apx-chart
+            [series]="activitySeries()"
+            [chart]="areaChart"
+            [colors]="colors"
+            [dataLabels]="chartDataLabels"
+            [stroke]="chartStroke"
+            [grid]="chartGrid"
+            [legend]="chartLegend"
+            [tooltip]="chartTooltip"
+            [xaxis]="activityAxis()"
+            [yaxis]="countAxis" />
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="filled">
+        <mat-card-header>
+          <mat-card-title class="text-lg">Statuts du comité</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <apx-chart
+            [series]="committeeStatusSeries()"
+            [chart]="donutChart"
+            [colors]="committeeStatusColors"
+            [labels]="committeeStatusLabels"
+            [legend]="chartLegend"
+            [plotOptions]="donutPlotOptions" />
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="filled">
+        <mat-card-header>
+          <mat-card-title class="text-lg">Statuts des volontaires</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <apx-chart
+            [series]="volunteerStatusSeries()"
+            [chart]="donutChart"
+            [colors]="volunteerStatusColors"
+            [labels]="volunteerStatusLabels"
+            [legend]="chartLegend"
+            [plotOptions]="donutPlotOptions" />
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="filled">
+        <mat-card-header>
+          <mat-card-title class="text-lg">Postes du comité</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <apx-chart
+            [series]="jobSeries()"
+            [chart]="barChart"
+            [colors]="jobColors"
+            [dataLabels]="chartDataLabels"
+            [grid]="chartGrid"
+            [plotOptions]="barPlotOptions"
+            [xaxis]="jobAxis()" />
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="filled">
+        <mat-card-header>
+          <mat-card-title class="text-lg">Équipes de volontaires</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <apx-chart
+            [series]="teamSeries()"
+            [chart]="barChart"
+            [colors]="teamColors"
+            [dataLabels]="chartDataLabels"
+            [grid]="chartGrid"
+            [plotOptions]="barPlotOptions"
+            [xaxis]="teamAxis()" />
+        </mat-card-content>
+      </mat-card>
+    </div>
+  } @else {
+    <div class="flex min-h-64 flex-col items-center justify-center gap-4 text-center">
+      <mat-icon class="text-neutral-500" svgIcon="triangle-alert" />
+      <div>
+        <div class="font-medium">Impossible de charger les statistiques</div>
+        <div class="mt-1 text-sm text-neutral-500">Veuillez réessayer dans quelques instants.</div>
+      </div>
+      <button matButton="outlined" type="button" (click)="statsResource.reload()">Réessayer</button>
+    </div>
+  }
+</div>

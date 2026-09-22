@@ -1,0 +1,43 @@
+<div class="mx-auto max-w-3xl p-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold">Notifications</h1>
+      <p class="mt-1 text-sm text-gray-500">Alertes liées à vos correspondances et activités.</p>
+    </div>
+    @if (notificationsResource.hasValue() && notificationsResource.value().data.unread) {
+      <button matButton="outlined" [disabled]="store.isUpdating()" (click)="store.markAllNotificationsRead()">
+        Tout marquer comme lu
+      </button>
+    }
+  </div>
+
+  @if (store.error()) {
+    <app-message class="mt-4" type="error" title="Erreur" [message]="store.error()" (dismissed)="store.clearError()" />
+  }
+
+  @if (notificationsResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else if (notificationsResource.hasValue() && notificationsResource.value().data.items.length) {
+    <div class="mt-6 grid gap-3">
+      @for (notification of notificationsResource.value().data.items; track notification.id) {
+        <mat-card
+          class="cursor-pointer p-4"
+          [class.border-l-4]="!notification.readAt"
+          [class.border-primary-500]="!notification.readAt"
+          (click)="markRead(notification.id, notification.readAt)">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="font-medium">{{ notification.title }}</h2>
+              <p class="mt-1 text-sm text-gray-600">{{ notification.body }}</p>
+            </div>
+            <span class="shrink-0 text-xs text-gray-400">{{ formatDate(notification.createdAt) }}</span>
+          </div>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <mat-card class="mt-6 p-8 text-center">
+      <p class="text-gray-500">Aucune notification.</p>
+    </mat-card>
+  }
+</div>

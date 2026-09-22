@@ -1,0 +1,33 @@
+<div class="p-6">
+  <a routerLink="/admin/besoins" class="text-sm text-primary-600 hover:underline">← Retour à la liste</a>
+
+  @if (needResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else if (needResource.hasValue()) {
+    @let need = needResource.value().data;
+    <h1 class="mt-4 text-2xl font-semibold">{{ need.priorityChallenge }}</h1>
+    <p class="mt-1 text-sm text-gray-500">{{ need.organizationName }}</p>
+
+    <mat-card class="mt-6 p-5">
+      <dl class="grid gap-3 text-sm md:grid-cols-2">
+        <div><dt class="font-medium text-gray-500">Statut</dt><dd>{{ need.status }}</dd></div>
+        <div><dt class="font-medium text-gray-500">Consentement</dt><dd>{{ need.publicationConsent }}</dd></div>
+        <div><dt class="font-medium text-gray-500">Priorité</dt><dd>{{ need.priority }}</dd></div>
+        <div><dt class="font-medium text-gray-500">Échéance</dt><dd>{{ need.timeline }}</dd></div>
+        <div><dt class="font-medium text-gray-500">Budget</dt><dd>{{ need.budgetBand }}</dd></div>
+        <div><dt class="font-medium text-gray-500">Pilote</dt><dd>{{ need.pilotWillingness }}</dd></div>
+      </dl>
+      <div class="mt-4">
+        <p class="text-sm font-medium text-gray-500">Domaines</p>
+        <p class="text-sm">{{ need.problemDomains.join(', ') }}</p>
+      </div>
+      <div class="mt-4">
+        <p class="text-sm font-medium text-gray-500">Types de solution</p>
+        <p class="text-sm">{{ need.solutionTypes.join(', ') }}</p>
+      </div>
+      @if (need.payload) {
+        <pre class="mt-4 overflow-auto rounded bg-gray-50 p-3 text-xs">{{ need.payload | json }}</pre>
+      }
+    </mat-card>
+  }
+</div>

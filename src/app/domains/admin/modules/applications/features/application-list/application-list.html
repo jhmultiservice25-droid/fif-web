@@ -1,0 +1,139 @@
+<div class="px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold tracking-tight">Candidatures</h1>
+      <p class="mt-1 text-neutral-500">Recherchez, filtrez et suivez les candidatures reçues.</p>
+    </div>
+    <button matButton="outlined" type="button" [disabled]="store.isExporting()" (click)="exportCsv()">
+      <mat-icon svgIcon="download" />
+      {{ store.isExporting() ? 'Export…' : 'Exporter en CSV' }}
+    </button>
+  </div>
+
+  @if (store.exportError()) {
+    <app-message
+      class="mb-5"
+      type="error"
+      title="Export impossible"
+      [message]="store.exportError()"
+      (dismissed)="store.clearExportError()" />
+  }
+
+  <mat-card appearance="outlined" class="mb-6">
+    <mat-card-content class="grid gap-3 pt-4 sm:grid-cols-2 xl:grid-cols-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Rechercher</mat-label>
+        <mat-icon matPrefix svgIcon="search" />
+        <input matInput [formField]="filterForm.q" (input)="resetPage()" placeholder="Nom, e-mail ou WhatsApp" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select [formField]="filterForm.kind" (selectionChange)="resetPage()">
+          <mat-option value="">Tous les types</mat-option>
+          @for (option of kindOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Statut</mat-label>
+        <mat-select [formField]="filterForm.status" (selectionChange)="resetPage()">
+          <mat-option value="">Tous les statuts</mat-option>
+          @for (option of statusOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Pôle</mat-label>
+        <mat-select [formField]="filterForm.poleId" (selectionChange)="changePole()">
+          <mat-option value="">Tous les pôles</mat-option>
+          @for (pole of poles(); track pole.id) {
+            <mat-option [value]="pole.id">{{ pole.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Poste</mat-label>
+        <mat-select [formField]="filterForm.jobId" (selectionChange)="resetPage()">
+          <mat-option value="">Tous les postes</mat-option>
+          @for (job of jobs(); track job.id) {
+            <mat-option [value]="job.id">{{ job.title }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Équipe volontaire</mat-label>
+        <mat-select [formField]="filterForm.teamId" (selectionChange)="resetPage()">
+          <mat-option value="">Toutes les équipes</mat-option>
+          @for (team of teamOptions; track team.id) {
+            <mat-option [value]="team.id">{{ team.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  @if (applicationsResource.isLoading()) {
+    <mat-card appearance="outlined" class="flex min-h-72 items-center justify-center">
+      <div class="animate-pulse text-neutral-500">Chargement des candidatures…</div>
+    </mat-card>
+  } @else if (applications(); as result) {
+    <mat-card appearance="outlined" class="overflow-hidden">
+      <div class="overflow-x-auto">
+        <table mat-table [dataSource]="result.items" class="w-full">
+          <ng-container matColumnDef="applicant">
+            <th mat-header-cell *matHeaderCellDef>Candidat</th>
+            <td mat-cell *matCellDef="let item">
+              <div class="font-medium">{{ item.fullName }}</div>
+              <div class="text-sm text-neutral-500">{{ item.email }} · {{ item.city }}</div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="kind">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let item">{{ kindLabel(item.kind) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="choice">
+            <th mat-header-cell *matHeaderCellDef>Premier choix</th>
+            <td mat-cell *matCellDef="let item">{{ item.primaryChoice }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let item">
+              <span class="rounded-full bg-primary-50 px-2.5 py-1 text-xs font-medium text-primary-800">
+                {{ statusLabel(item.status) }}
+              </span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>Reçue le</th>
+            <td mat-cell *matCellDef="let item">{{ formatDate(item.createdAt) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef><span class="sr-only">Actions</span></th>
+            <td mat-cell *matCellDef="let item" class="text-right">
+              <a matButton="outlined" [routerLink]="[item.id]">Consulter</a>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+      @if (result.items.length === 0) {
+        <div class="px-6 py-16 text-center text-neutral-500">Aucune candidature ne correspond aux filtres.</div>
+      }
+      <mat-paginator
+        [length]="result.total"
+        [pageIndex]="result.page - 1"
+        [pageSize]="result.pageSize"
+        [pageSizeOptions]="[10, 20, 50, 100]"
+        (page)="changePage($event)" />
+    </mat-card>
+  } @else {
+    <div class="flex min-h-64 flex-col items-center justify-center gap-4 text-center">
+      <mat-icon svgIcon="triangle-alert" />
+      <p>Impossible de charger les candidatures.</p>
+      <button matButton="outlined" type="button" (click)="applicationsResource.reload()">Réessayer</button>
+    </div>
+  }
+</div>

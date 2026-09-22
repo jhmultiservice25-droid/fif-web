@@ -1,0 +1,37 @@
+<section>
+  <h1 class="text-3xl font-semibold tracking-tight">Rejoindre l’espace participants</h1>
+  <p class="mb-8 mt-2 text-sm text-gray-500">
+    Choisissez le profil qui correspond à votre situation pour accéder à l’espace dédié FIF.
+  </p>
+
+  <div class="grid gap-4">
+    <a mat-card routerLink="/auth/inscription/organisation" class="block cursor-pointer p-6 no-underline transition hover:shadow-md">
+      <div class="flex items-start gap-4">
+        <mat-icon svgIcon="building-2" class="size-8 text-primary-600" />
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">J’ai un besoin / un défi</h2>
+          <p class="mt-1 text-sm text-gray-500">
+            Organisation ou entreprise cherchant des solutions innovantes pour un défi concret.
+          </p>
+        </div>
+      </div>
+    </a>
+
+    <a mat-card routerLink="/auth/inscription/innovateur" class="block cursor-pointer p-6 no-underline transition hover:shadow-md">
+      <div class="flex items-start gap-4">
+        <mat-icon svgIcon="lightbulb" class="size-8 text-primary-600" />
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">J’ai une solution / un projet</h2>
+          <p class="mt-1 text-sm text-gray-500">
+            Innovateur ou porteur de projet proposant une solution répondant à un besoin du marché.
+          </p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <p class="mt-8 text-center text-sm text-gray-500">
+    Déjà inscrit ?
+    <a routerLink="/auth/connexion" class="font-medium text-primary-600 hover:underline">Se connecter</a>
+  </p>
+</section>

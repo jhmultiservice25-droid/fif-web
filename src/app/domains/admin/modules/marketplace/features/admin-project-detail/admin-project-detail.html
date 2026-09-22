@@ -1,0 +1,35 @@
+<div class="p-6">
+  <a routerLink="/admin/projets" class="text-sm text-primary-600 hover:underline">← Retour à la liste</a>
+
+  @if (projectResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else if (projectResource.hasValue()) {
+    @let project = projectResource.value().data;
+    <h1 class="mt-4 text-2xl font-semibold">{{ project.title }}</h1>
+    <p class="mt-1 text-sm text-gray-500">{{ project.innovatorDisplayName }}</p>
+
+    <mat-card class="mt-6 p-5">
+      <dl class="grid gap-3 text-sm md:grid-cols-2">
+        <div><dt class="font-medium text-gray-500">Statut</dt><dd>{{ project.status }}</dd></div>
+        <div><dt class="font-medium text-gray-500">Consentement</dt><dd>{{ project.publicationConsent }}</dd></div>
+        <div><dt class="font-medium text-gray-500">Stade</dt><dd>{{ project.stage }}</dd></div>
+      </dl>
+      <div class="mt-4">
+        <p class="text-sm font-medium text-gray-500">Problème adressé</p>
+        <p class="text-sm">{{ project.problemSolved }}</p>
+      </div>
+      <div class="mt-4">
+        <p class="text-sm font-medium text-gray-500">Solution</p>
+        <p class="text-sm">{{ project.solution }}</p>
+      </div>
+      <div class="mt-4">
+        <p class="text-sm font-medium text-gray-500">Secteurs</p>
+        <p class="text-sm">{{ project.sectors.join(', ') }}</p>
+      </div>
+      <div class="mt-4">
+        <p class="text-sm font-medium text-gray-500">Capacités</p>
+        <p class="text-sm">{{ project.capabilities.join(', ') }}</p>
+      </div>
+    </mat-card>
+  }
+</div>

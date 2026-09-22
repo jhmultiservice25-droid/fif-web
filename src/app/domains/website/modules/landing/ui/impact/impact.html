@@ -1,0 +1,71 @@
+<section class="scroll-mt-24 overflow-hidden bg-gray-50 py-24 sm:py-28" id="impact" aria-labelledby="impact-title">
+  <div class="mx-auto max-w-screen-2xl px-6 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+    <header class="grid items-end gap-8 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-7">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary-700">L'impact recherché</p>
+        <h2
+          id="impact-title"
+          class="mt-7 max-w-4xl text-5xl font-bold leading-[1.02] tracking-[-0.04em] text-gray-950 sm:text-6xl">
+          2 000 jeunes,<br /><span class="text-primary-700">pas 2 000 spectateurs.</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-5 lg:pb-2">
+        <div class="mb-7 h-1 w-20 bg-primary-600" aria-hidden="true"></div>
+        <p class="max-w-xl text-lg text-gray-600">
+          Chaque participant repart avec une compétence acquise, une nouvelle connexion, une opportunité découverte et
+          une idée valorisée.
+        </p>
+      </div>
+    </header>
+
+    <div class="mt-16 grid overflow-hidden border border-gray-200 bg-white lg:grid-cols-[0.85fr_1.15fr]">
+      <mat-card
+        appearance="outlined"
+        class="rounded-none! border-0! bg-primary-700! text-white! shadow-none! lg:border-r! lg:border-primary-800!">
+        <mat-card-content class="flex min-h-80 flex-col justify-between p-8! sm:p-10! lg:min-h-full">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary-200">Audience active</p>
+          <div class="mt-16">
+            <p class="text-7xl font-bold leading-none tracking-[-0.06em] sm:text-8xl xl:text-9xl">
+              {{ impactTargets[0].value }}
+            </p>
+            <p class="mt-5 text-xl font-medium text-white/80">{{ impactTargets[0].label }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="grid sm:grid-cols-2" aria-label="Objectifs chiffrés du festival">
+        @for (target of impactTargets; track target.label) {
+          @if (!$first) {
+            <mat-card
+              appearance="outlined"
+              class="group rounded-none! border-0! border-t! border-gray-200! bg-white! shadow-none! transition-colors duration-300 hover:bg-primary-50! sm:odd:border-r! sm:odd:border-gray-200! {{
+                $last ? 'sm:col-span-2 sm:border-r-0!' : ''
+              }}">
+              <mat-card-content
+                class="grid min-h-44 content-between gap-8 p-7! sm:p-8! {{
+                  $last ? 'sm:grid-cols-[auto_1fr] sm:items-end' : ''
+                }}">
+                <p
+                  class="text-5xl font-bold leading-none tracking-tightest text-gray-950 transition-colors group-hover:text-primary-700 sm:text-6xl">
+                  {{ target.value }}
+                </p>
+                <div>
+                  <div
+                    class="mb-4 h-0.5 w-10 bg-primary-500 transition-[width] duration-300 group-hover:w-16"
+                    aria-hidden="true"></div>
+                  <p class="text-base font-semibold text-gray-600">{{ target.label }}</p>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="mt-8 flex items-center gap-5" aria-hidden="true">
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-primary-700">FIF 2026</span>
+      <span class="h-px flex-1 bg-primary-200"></span>
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Impact mesurable</span>
+    </div>
+  </div>
+</section>

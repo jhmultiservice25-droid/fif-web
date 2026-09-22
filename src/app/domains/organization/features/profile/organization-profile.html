@@ -1,0 +1,72 @@
+<div class="mx-auto max-w-3xl p-6">
+  <h1 class="text-2xl font-semibold">Profil organisation</h1>
+  <p class="mt-1 text-sm text-gray-500">Informations de contact et identification de votre organisation (Q1–Q5).</p>
+
+  @if (store.error()) {
+    <app-message class="mt-4" type="error" title="Erreur" [message]="store.error()" (dismissed)="store.clearError()" />
+  }
+
+  @if (profileResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else {
+    <form class="mt-6 flex flex-col gap-4" (submit)="saveProfile(); $event.preventDefault()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom de l’organisation</mat-label>
+        <input matInput [formField]="profileForm.name" />
+      </mat-form-field>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Type d’organisation</mat-label>
+          <mat-select [formField]="profileForm.type">
+            @for (option of catalogStore.orgTypes(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Secteur</mat-label>
+          <mat-select [formField]="profileForm.sector">
+            @for (option of catalogStore.sectors(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ville</mat-label>
+        <input matInput [formField]="profileForm.city" />
+      </mat-form-field>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Nom du contact</mat-label>
+          <input matInput [formField]="profileForm.contactName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Fonction du contact</mat-label>
+          <input matInput [formField]="profileForm.contactTitle" />
+        </mat-form-field>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Téléphone</mat-label>
+          <input matInput [formField]="profileForm.phone" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail professionnel</mat-label>
+          <input matInput type="email" [formField]="profileForm.professionalEmail" />
+        </mat-form-field>
+      </div>
+
+      <button matButton="filled" type="submit" [disabled]="store.isSaving() || profileForm().invalid()">
+        {{ store.isSaving() ? 'Enregistrement…' : 'Enregistrer' }}
+      </button>
+    </form>
+  }
+</div>

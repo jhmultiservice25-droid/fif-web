@@ -1,0 +1,45 @@
+<div class="mx-auto max-w-3xl p-6">
+  <h1 class="text-2xl font-semibold">Profil innovateur</h1>
+  <p class="mt-1 text-sm text-gray-500">Informations affichées aux organisations lors du matching.</p>
+
+  @if (store.error()) {
+    <app-message class="mt-4" type="error" title="Erreur" [message]="store.error()" (dismissed)="store.clearError()" />
+  }
+
+  @if (profileResource.isLoading()) {
+    <p class="mt-6 text-sm text-gray-500">Chargement…</p>
+  } @else {
+    <form class="mt-6 flex flex-col gap-4" (submit)="saveProfile(); $event.preventDefault()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom d’affichage</mat-label>
+        <input matInput [formField]="profileForm.displayName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Organisation (optionnel)</mat-label>
+        <input matInput [formField]="profileForm.organization" />
+      </mat-form-field>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Ville</mat-label>
+          <input matInput [formField]="profileForm.city" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Téléphone</mat-label>
+          <input matInput [formField]="profileForm.phone" />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>E-mail de contact</mat-label>
+        <input matInput type="email" [formField]="profileForm.email" />
+      </mat-form-field>
+
+      <button matButton="filled" type="submit" [disabled]="store.isSaving() || profileForm().invalid()">
+        {{ store.isSaving() ? 'Enregistrement…' : 'Enregistrer' }}
+      </button>
+    </form>
+  }
+</div>
