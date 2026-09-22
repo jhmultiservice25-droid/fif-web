@@ -37,6 +37,14 @@ const hasStoredApplication = (key: string): boolean => {
   }
 };
 
+const storeParticipantId = (id: string): void => {
+  try {
+    window.localStorage.setItem('fif.participant.id', id);
+  } catch {
+    // Badge remains available during the current confirmation screen.
+  }
+};
+
 const storeApplication = (key: string): void => {
   try {
     window.localStorage.setItem(key, 'true');
@@ -49,8 +57,7 @@ export const ApplicationStore = signalStore(
   withState(initialState),
   withProps(() => ({
     _http: inject(HttpClient),
-    _platformId: inject(PLATFORM_ID),
-    _lastParticipantId: ''
+    _platformId: inject(PLATFORM_ID)
   })),
   withMethods(({ _http, _platformId, isAlreadyApplied, ...store }) => ({
     initialize(kind: IApplicationStorageKind): void {
@@ -114,9 +121,10 @@ export const ApplicationStore = signalStore(
         tap(() => patchState(store, { isLoading: true, isSubmitted: false, error: '' })),
         switchMap((payload) =>
           _http.post<IApiSuccess<IParticipantRegistration>>('/applications/participant', payload).pipe(
-            tap(() => {
+            tap((response) => {
               if (isPlatformBrowser(_platformId)) {
                 storeApplication(APPLICATION_STORAGE_KEYS.PARTICIPANT);
+                storeParticipantId(response.data.id);
               }
               patchState(store, { isLoading: false, isSubmitted: true, isAlreadyApplied: true });
             }),
