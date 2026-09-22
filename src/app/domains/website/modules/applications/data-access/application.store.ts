@@ -6,7 +6,6 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import {
   IApiError,
   IApiSuccess,
-  IApplicationKind,
   ICommitteeApplication,
   ICommitteeApplicationInput,
   IParticipantRegistration,
