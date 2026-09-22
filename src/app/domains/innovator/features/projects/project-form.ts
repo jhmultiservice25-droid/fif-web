@@ -48,6 +48,8 @@ export default class ProjectForm implements OnInit {
   protected readonly pitchVideo = signal<File | null>(null);
   protected readonly hasPitchVideo = signal(false);
   protected readonly isUploadingVideo = signal(false);
+  protected readonly pitchVideoDuration = signal<number | null>(null);
+  protected readonly pitchVideoError = signal('');
 
   protected readonly projectResource = httpResource<IApiSuccess<IProject>>(() => {
     const projectId = this.id();
@@ -101,7 +103,31 @@ export default class ProjectForm implements OnInit {
 
   protected onPitchVideoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.pitchVideo.set(input.files?.[0] ?? null);
+    const file = input.files?.[0] ?? null;
+    this.pitchVideo.set(null);
+    this.pitchVideoDuration.set(null);
+    this.pitchVideoError.set('');
+    if (!file) return;
+
+    const video = document.createElement('video');
+    const url = URL.createObjectURL(file);
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      if (!Number.isFinite(video.duration) || video.duration <= 0 || video.duration > 120) {
+        this.pitchVideoError.set('La vidéo doit durer 2 minutes maximum.');
+        input.value = '';
+        return;
+      }
+      this.pitchVideoDuration.set(video.duration);
+      this.pitchVideo.set(file);
+    };
+    video.onerror = () => {
+      URL.revokeObjectURL(url);
+      this.pitchVideoError.set('Impossible de lire la durée de cette vidéo.');
+      input.value = '';
+    };
+    video.src = url;
   }
 
   protected uploadPitchVideo(): void {
@@ -112,7 +138,11 @@ export default class ProjectForm implements OnInit {
     const formData = new FormData();
     formData.append('video', file);
     this.isUploadingVideo.set(true);
-    this.http.post(`/me/projects/${encodeURIComponent(projectId)}/pitch-video`, formData).subscribe({
+    const duration = this.pitchVideoDuration();
+    if (!duration) return;
+    this.http.post(`/me/projects/${encodeURIComponent(projectId)}/pitch-video`, formData, {
+      headers: { 'X-Video-Duration-Seconds': String(duration) }
+    }).subscribe({
       next: () => {
         this.hasPitchVideo.set(true);
         this.isUploadingVideo.set(false);
