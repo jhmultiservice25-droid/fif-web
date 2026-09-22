@@ -3,6 +3,7 @@ export interface IParticipantActivity {
   time: string;
   title: string;
   description: string;
+  speakers?: readonly string[];
 }
 
 export interface IParticipantDay {
@@ -88,8 +89,50 @@ export const PARTICIPANT_DAYS: readonly IParticipantDay[] = [
       {
         id: 'd2-academy',
         time: '10h00–12h30',
-        title: 'FIKIRI Academy',
-        description: 'Masterclasses : startup, IA générative, cybersécurité, MVP, pitch, financement, marque personnelle, data & langues congolaises.'
+        title: 'FIKIRI Academy — Masterclass Startup',
+        description: 'Session pratique dédiée à la création et au développement d’une startup.'
+      },
+      {
+        id: 'd2-academy-ia',
+        time: '10h00–12h30',
+        title: 'FIKIRI Academy — IA générative',
+        description: 'Masterclass pratique sur les usages et opportunités de l’IA générative.'
+      },
+      {
+        id: 'd2-academy-cyber',
+        time: '10h00–12h30',
+        title: 'FIKIRI Academy — Cybersécurité',
+        description: 'Masterclass sur les fondamentaux et pratiques de cybersécurité.'
+      },
+      {
+        id: 'd2-academy-mvp',
+        time: '10h00–12h30',
+        title: 'FIKIRI Academy — MVP',
+        description: 'Apprendre à transformer une idée en produit minimum viable.'
+      },
+      {
+        id: 'd2-academy-pitch',
+        time: '10h00–12h30',
+        title: 'FIKIRI Academy — Pitch',
+        description: 'Structurer et présenter efficacement une solution ou un projet.'
+      },
+      {
+        id: 'd2-academy-financement',
+        time: '10h00–12h30',
+        title: 'FIKIRI Academy — Financement',
+        description: 'Comprendre les voies de financement d’un projet ou d’une entreprise.'
+      },
+      {
+        id: 'd2-academy-marque',
+        time: '10h00–12h30',
+        title: 'FIKIRI Academy — Marque personnelle',
+        description: 'Développer sa visibilité et son positionnement professionnel.'
+      },
+      {
+        id: 'd2-academy-data-langues',
+        time: '10h00–12h30',
+        title: 'FIKIRI Academy — Data & langues congolaises',
+        description: 'Explorer les usages de la donnée et des technologies linguistiques adaptées au contexte congolais.'
       },
       {
         id: 'd2-permanentes',
