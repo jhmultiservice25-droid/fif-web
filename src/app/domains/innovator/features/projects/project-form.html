@@ -63,6 +63,27 @@
         </mat-form-field>
       </div>
 
+
+      <section class="rounded-xl border border-gray-200 bg-gray-50 p-5">
+        <p class="text-sm font-bold text-gray-950">Vidéo de présentation — obligatoire avant soumission</p>
+        <p class="mt-1 text-sm text-gray-600">
+          Présentez votre solution en 2 minutes maximum. Enregistrez d'abord le brouillon, puis ajoutez la vidéo.
+        </p>
+
+        @if (hasPitchVideo()) {
+          <p class="mt-4 font-semibold text-green-700">Vidéo ajoutée ✓</p>
+        } @else if (!isNew()) {
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <input type="file" accept="video/*" (change)="onPitchVideoSelected($event)" />
+            <button matButton="outlined" type="button" [disabled]="!pitchVideo() || isUploadingVideo()" (click)="uploadPitchVideo()">
+              {{ isUploadingVideo() ? 'Envoi…' : 'Ajouter la vidéo' }}
+            </button>
+          </div>
+        } @else {
+          <p class="mt-4 text-sm font-medium text-amber-700">Enregistrez le brouillon pour pouvoir ajouter votre vidéo.</p>
+        }
+      </section>
+
       <div class="flex flex-wrap gap-3">
         <button matButton="outlined" type="submit" [disabled]="store.isSaving() || projectForm().invalid()">
           {{ store.isSaving() ? 'Enregistrement…' : 'Enregistrer le brouillon' }}
@@ -70,9 +91,9 @@
         <button
           matButton="filled"
           type="button"
-          [disabled]="store.isSaving() || projectForm().invalid()"
+          [disabled]="store.isSaving() || projectForm().invalid() || !hasPitchVideo()"
           (click)="save(true)">
-          Soumettre
+          Soumettre ma candidature
         </button>
       </div>
     </form>
