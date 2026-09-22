@@ -41,7 +41,14 @@ export type IVolunteerTeamId =
   | "studio"
   | "tech"
   | "protocole"
-  | "logistique";
+  | "logistique"
+  | "securite"
+  | "talent"
+  | "mentoring"
+  | "investors"
+  | "arena"
+  | "experience"
+  | "hospitalite";
 export type IJobRoleKind = "LEAD" | "DEPUTY";
 
 export interface IVolunteerTeam {
