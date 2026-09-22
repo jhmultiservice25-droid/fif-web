@@ -19,9 +19,12 @@
     } @else {
       <div id="participant-badge" class="mx-auto aspect-[1.586/1] max-w-2xl overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-xl print:shadow-none">
         <div class="flex h-full flex-col">
-          <div class="bg-primary-950 px-8 py-6 text-white">
-            <p class="text-xs font-bold uppercase tracking-[0.22em]">FIKIRI Innovation Festival</p>
-            <p class="mt-1 text-sm text-white/70">25–27 novembre 2026 · Kinshasa</p>
+          <div class="flex items-center justify-between gap-5 bg-primary-950 px-8 py-5 text-white">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.22em]">FIKIRI Innovation Festival</p>
+              <p class="mt-1 text-sm text-white/70">25–27 novembre 2026 · Kinshasa</p>
+            </div>
+            <img src="/images/logo.webp" alt="Logo FIKIRI" class="h-14 w-auto max-w-36 object-contain" />
           </div>
           <div class="flex flex-1 flex-col justify-center px-8 py-7">
             <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary-700">Participant</p>
@@ -32,12 +35,16 @@
             <div class="mt-7 flex items-end justify-between gap-6 border-t border-gray-200 pt-5">
               <div>
                 <p class="text-xs uppercase tracking-[0.14em] text-gray-500">Identifiant</p>
-                <p class="mt-1 font-mono text-sm font-bold text-gray-900">{{ badge()?.id }}</p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs font-bold uppercase tracking-[0.14em] text-primary-700">FIF 2026</p>
+                <p class="mt-1 font-mono text-xs font-bold text-gray-900">{{ badge()?.id }}</p>
+                <p class="mt-3 text-xs font-bold uppercase tracking-[0.14em] text-primary-700">FIF 2026</p>
                 <p class="text-xs text-gray-500">La RDC exporte… son intelligence.</p>
               </div>
+              @if (qrCode()) {
+                <div class="rounded-xl border border-gray-200 bg-white p-2 text-center">
+                  <img [src]="qrCode()" alt="QR Code du badge participant" class="h-24 w-24" />
+                  <p class="mt-1 text-[9px] font-bold uppercase tracking-wider text-gray-500">Scan contrôle</p>
+                </div>
+              }
             </div>
           </div>
         </div>
