@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import QRCode from 'qrcode';
 
 interface IBadgeData {
   id: string;
@@ -21,6 +22,7 @@ export class ParticipantBadge {
   protected readonly badge = signal<IBadgeData | null>(null);
   protected readonly error = signal('');
   protected readonly isLoading = signal(false);
+  protected readonly qrCode = signal('');
 
   protected generate(): void {
     const id = window.localStorage.getItem('fif.participant.id');
@@ -32,8 +34,13 @@ export class ParticipantBadge {
     this.isLoading.set(true);
     this.error.set('');
     this.http.post<IBadgeData>(`/applications/participant/${encodeURIComponent(id)}/badge`, {}).subscribe({
-      next: (badge) => {
+      next: async (badge) => {
         this.badge.set(badge);
+        this.qrCode.set(await QRCode.toDataURL(`FIF2026:PARTICIPANT:${badge.id}`, {
+          errorCorrectionLevel: 'H',
+          margin: 1,
+          width: 320
+        }));
         this.isLoading.set(false);
       },
       error: (error) => {
