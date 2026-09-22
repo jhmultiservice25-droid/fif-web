@@ -47,4 +47,5 @@ export type IJobRoleKind = "LEAD" | "DEPUTY";
 export interface IVolunteerTeam {
   id: IVolunteerTeamId;
   name: string;
+  description: string;
 }
