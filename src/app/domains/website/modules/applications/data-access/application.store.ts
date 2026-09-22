@@ -9,12 +9,14 @@ import {
   IApplicationKind,
   ICommitteeApplication,
   ICommitteeApplicationInput,
+  IParticipantRegistration,
+  IParticipantRegistrationInput,
   IVolunteerApplication,
   IVolunteerApplicationInput
 } from '@/app/shared/interfaces';
 import { catchError, filter, of, pipe, switchMap, tap } from 'rxjs';
 import { IApplicationState } from '../interfaces';
-import { APPLICATION_STORAGE_KEYS } from '../helpers/application-storage';
+import { APPLICATION_STORAGE_KEYS, IApplicationStorageKind } from '../helpers/application-storage';
 
 const initialState: IApplicationState = {
   isLoading: false,
@@ -51,7 +53,7 @@ export const ApplicationStore = signalStore(
     _platformId: inject(PLATFORM_ID)
   })),
   withMethods(({ _http, _platformId, isAlreadyApplied, ...store }) => ({
-    initialize(kind: IApplicationKind): void {
+    initialize(kind: IApplicationStorageKind): void {
       if (!isPlatformBrowser(_platformId)) return;
 
       patchState(store, {
@@ -95,6 +97,26 @@ export const ApplicationStore = signalStore(
             tap(() => {
               if (isPlatformBrowser(_platformId)) {
                 storeApplication(APPLICATION_STORAGE_KEYS.VOLUNTEER);
+              }
+              patchState(store, { isLoading: false, isSubmitted: true, isAlreadyApplied: true });
+            }),
+            catchError((error: HttpErrorResponse) => {
+              patchState(store, { isLoading: false, error: getErrorMessage(error) });
+              return of(null);
+            })
+          )
+        )
+      )
+    ),
+    submitParticipant: rxMethod<IParticipantRegistrationInput>(
+      pipe(
+        filter(() => !isAlreadyApplied()),
+        tap(() => patchState(store, { isLoading: true, isSubmitted: false, error: '' })),
+        switchMap((payload) =>
+          _http.post<IApiSuccess<IParticipantRegistration>>('/applications/participant', payload).pipe(
+            tap(() => {
+              if (isPlatformBrowser(_platformId)) {
+                storeApplication(APPLICATION_STORAGE_KEYS.PARTICIPANT);
               }
               patchState(store, { isLoading: false, isSubmitted: true, isAlreadyApplied: true });
             }),
