@@ -1,4 +1,4 @@
-import { httpResource } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Component, effect, inject, input, OnInit, signal } from '@angular/core';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,6 +44,12 @@ export default class ProjectForm implements OnInit {
   protected readonly store = inject(InnovatorStore);
   protected readonly catalogStore = inject(MarketplaceCatalogStore);
   private readonly router = inject(Router);
+  private readonly http = inject(HttpClient);
+  protected readonly pitchVideo = signal<File | null>(null);
+  protected readonly hasPitchVideo = signal(false);
+  protected readonly isUploadingVideo = signal(false);
+  protected readonly pitchVideoDuration = signal<number | null>(null);
+  protected readonly pitchVideoError = signal('');
 
   protected readonly projectResource = httpResource<IApiSuccess<IProject>>(() => {
     const projectId = this.id();
@@ -73,6 +79,7 @@ export default class ProjectForm implements OnInit {
           stage: project.stage,
           publicationConsent: project.publicationConsent
         });
+        this.hasPitchVideo.set(Boolean(project.pitchVideoPath));
       }
     });
 
@@ -91,6 +98,59 @@ export default class ProjectForm implements OnInit {
 
   ngOnInit(): void {
     this.catalogStore.load().subscribe();
+  }
+
+
+  protected onPitchVideoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.pitchVideo.set(null);
+    this.pitchVideoDuration.set(null);
+    this.pitchVideoError.set('');
+    if (!file) return;
+
+    const video = document.createElement('video');
+    const url = URL.createObjectURL(file);
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      if (!Number.isFinite(video.duration) || video.duration <= 0 || video.duration > 120) {
+        this.pitchVideoError.set('La vidéo doit durer 2 minutes maximum.');
+        input.value = '';
+        return;
+      }
+      this.pitchVideoDuration.set(video.duration);
+      this.pitchVideo.set(file);
+    };
+    video.onerror = () => {
+      URL.revokeObjectURL(url);
+      this.pitchVideoError.set('Impossible de lire la durée de cette vidéo.');
+      input.value = '';
+    };
+    video.src = url;
+  }
+
+  protected uploadPitchVideo(): void {
+    const projectId = this.id();
+    const file = this.pitchVideo();
+    if (!projectId || projectId === 'nouveau' || !file) return;
+
+    const formData = new FormData();
+    formData.append('video', file);
+    this.isUploadingVideo.set(true);
+    const duration = this.pitchVideoDuration();
+    if (!duration) return;
+    this.http.post(`/me/projects/${encodeURIComponent(projectId)}/pitch-video`, formData, {
+      headers: { 'X-Video-Duration-Seconds': String(duration) }
+    }).subscribe({
+      next: () => {
+        this.hasPitchVideo.set(true);
+        this.isUploadingVideo.set(false);
+        this.pitchVideo.set(null);
+        this.projectResource.reload();
+      },
+      error: () => this.isUploadingVideo.set(false)
+    });
   }
 
   protected save(asSubmitted = false): void {

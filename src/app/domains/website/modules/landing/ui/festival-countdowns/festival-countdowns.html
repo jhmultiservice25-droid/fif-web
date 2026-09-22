@@ -1,0 +1,31 @@
+<section class="bg-primary-950 py-12 text-white" aria-labelledby="countdown-title">
+  <div class="mx-auto max-w-screen-2xl px-6 sm:px-8 lg:px-16 xl:px-28 2xl:px-36">
+    <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary-300">Dates à retenir</p>
+        <h2 id="countdown-title" class="mt-2 text-3xl font-bold">Les comptes à rebours du FIF 2026</h2>
+      </div>
+      <p class="text-sm text-white/65">Heure de Kinshasa (UTC+1)</p>
+    </div>
+
+    <div class="mt-8 grid gap-4 lg:grid-cols-3">
+      @for (item of countdowns(); track item.label) {
+        <article class="border border-white/15 bg-white/10 p-6 backdrop-blur-sm">
+          <p class="min-h-12 text-sm font-semibold text-primary-200">{{ item.label }}</p>
+          <p class="mt-2 text-xs uppercase tracking-[0.14em] text-white/60">{{ item.deadline }}</p>
+
+          @if (!item.expired) {
+            <div class="mt-6 grid grid-cols-4 gap-2 text-center">
+              <div class="bg-black/25 p-3"><p class="text-2xl font-bold">{{ item.days }}</p><p class="text-[10px] uppercase text-white/55">Jours</p></div>
+              <div class="bg-black/25 p-3"><p class="text-2xl font-bold">{{ item.hours }}</p><p class="text-[10px] uppercase text-white/55">Heures</p></div>
+              <div class="bg-black/25 p-3"><p class="text-2xl font-bold">{{ item.minutes }}</p><p class="text-[10px] uppercase text-white/55">Min.</p></div>
+              <div class="bg-black/25 p-3"><p class="text-2xl font-bold">{{ item.seconds }}</p><p class="text-[10px] uppercase text-white/55">Sec.</p></div>
+            </div>
+          } @else {
+            <p class="mt-6 border border-white/15 bg-black/25 p-4 text-center font-bold">Échéance atteinte</p>
+          }
+        </article>
+      }
+    </div>
+  </div>
+</section>

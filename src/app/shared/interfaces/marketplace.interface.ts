@@ -119,6 +119,8 @@ export interface IProject {
   capabilities: string[];
   stage: string;
   publicationConsent: IPublicationConsent;
+  pitchVideoPath?: string | null;
+  pitchVideoOriginalName?: string | null;
   createdAt: string;
   updatedAt: string;
 }

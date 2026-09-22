@@ -1,0 +1,41 @@
+<section class="scroll-mt-24 bg-white py-24 sm:py-28" id="programme" aria-labelledby="programme-title">
+  <div class="mx-auto max-w-screen-2xl px-6 sm:px-8 lg:px-16 xl:px-24 2xl:px-32">
+    <header class="grid items-end gap-8 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-8">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary-700">Programme FIF 2026</p>
+        <h2
+          id="programme-title"
+          class="mt-7 max-w-5xl text-5xl font-bold leading-[1.02] tracking-[-0.04em] text-gray-950 sm:text-6xl">
+          Trois jours d'innovation,<br /><span class="text-primary-700">de rencontres et d'opportunités.</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-4 lg:pb-2">
+        <div class="mb-7 h-1 w-20 bg-primary-600" aria-hidden="true"></div>
+        <p class="max-w-xl text-lg text-gray-600">25–27 novembre 2026 · Kinshasa, RDC</p>
+      </div>
+    </header>
+
+    <div class="mt-16 grid gap-6 xl:grid-cols-3">
+      @for (day of days; track day.date) {
+        <article class="overflow-hidden border border-gray-200 bg-white shadow-sm">
+          <header class="bg-primary-950 p-6 text-white sm:p-7">
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary-300">{{ day.date }}</p>
+            <h3 class="mt-3 text-2xl font-bold leading-tight">{{ day.title }}</h3>
+          </header>
+
+          <div class="divide-y divide-gray-200">
+            @for (session of day.sessions; track session[0] + session[1]) {
+              <div class="grid gap-3 p-6 sm:grid-cols-[7.5rem_1fr]">
+                <p class="text-sm font-bold text-primary-700">{{ session[0] }}</p>
+                <div>
+                  <h4 class="font-bold text-gray-950">{{ session[1] }}</h4>
+                  <p class="mt-1 text-sm leading-6 text-gray-600">{{ session[2] }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

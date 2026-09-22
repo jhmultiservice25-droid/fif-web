@@ -51,6 +51,24 @@ export interface IVolunteerApplicationInput extends IApplicantIdentity {
   motivation: string;
 }
 
+export interface IParticipantRegistrationInput {
+  lastName: string;
+  postnom: string;
+  firstName: string;
+  city: string;
+  whatsapp: string;
+  email: string;
+  organization?: string | null;
+  selectedDays: string[];
+  selectedActivities: string[];
+}
+
+export interface IParticipantRegistration extends IParticipantRegistrationInput {
+  id: string;
+  organization: string | null;
+  createdAt: string;
+}
+
 export interface ICommitteeApplication extends IApplicantIdentity {
   id: string;
   primaryJobId: string;

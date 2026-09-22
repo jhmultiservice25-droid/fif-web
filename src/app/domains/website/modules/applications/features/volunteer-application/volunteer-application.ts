@@ -146,6 +146,17 @@ export class VolunteerApplication {
     this.applicationForm.profile.primaryTeamId().markAsTouched();
   }
 
+  protected selectedPrimaryTeamName(): string {
+    const selected = this.applicationForm.profile.primaryTeamId().value();
+    return this.teams.find((team) => team.id === selected)?.name ?? '';
+  }
+
+  protected clearPrimaryTeam(): void {
+    this.applicationForm.profile.primaryTeamId().value.set('');
+    this.applicationForm.profile.primaryTeamId().markAsTouched();
+    this.applicationForm.profile.secondaryTeamId().value.set('');
+  }
+
   protected selectSecondaryTeam(value: IVolunteerApplicationForm['profile']['secondaryTeamId']): void {
     this.applicationForm.profile.secondaryTeamId().value.set(value);
     this.applicationForm.profile.secondaryTeamId().markAsTouched();

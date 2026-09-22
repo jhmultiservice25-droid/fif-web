@@ -6,15 +6,16 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import {
   IApiError,
   IApiSuccess,
-  IApplicationKind,
   ICommitteeApplication,
   ICommitteeApplicationInput,
+  IParticipantRegistration,
+  IParticipantRegistrationInput,
   IVolunteerApplication,
   IVolunteerApplicationInput
 } from '@/app/shared/interfaces';
 import { catchError, filter, of, pipe, switchMap, tap } from 'rxjs';
 import { IApplicationState } from '../interfaces';
-import { APPLICATION_STORAGE_KEYS } from '../helpers/application-storage';
+import { APPLICATION_STORAGE_KEYS, IApplicationStorageKind } from '../helpers/application-storage';
 
 const initialState: IApplicationState = {
   isLoading: false,
@@ -36,6 +37,14 @@ const hasStoredApplication = (key: string): boolean => {
   }
 };
 
+const storeParticipantId = (id: string): void => {
+  try {
+    window.localStorage.setItem('fif.participant.id', id);
+  } catch {
+    // Badge remains available during the current confirmation screen.
+  }
+};
+
 const storeApplication = (key: string): void => {
   try {
     window.localStorage.setItem(key, 'true');
@@ -51,7 +60,7 @@ export const ApplicationStore = signalStore(
     _platformId: inject(PLATFORM_ID)
   })),
   withMethods(({ _http, _platformId, isAlreadyApplied, ...store }) => ({
-    initialize(kind: IApplicationKind): void {
+    initialize(kind: IApplicationStorageKind): void {
       if (!isPlatformBrowser(_platformId)) return;
 
       patchState(store, {
@@ -95,6 +104,27 @@ export const ApplicationStore = signalStore(
             tap(() => {
               if (isPlatformBrowser(_platformId)) {
                 storeApplication(APPLICATION_STORAGE_KEYS.VOLUNTEER);
+              }
+              patchState(store, { isLoading: false, isSubmitted: true, isAlreadyApplied: true });
+            }),
+            catchError((error: HttpErrorResponse) => {
+              patchState(store, { isLoading: false, error: getErrorMessage(error) });
+              return of(null);
+            })
+          )
+        )
+      )
+    ),
+    submitParticipant: rxMethod<IParticipantRegistrationInput>(
+      pipe(
+        filter(() => !isAlreadyApplied()),
+        tap(() => patchState(store, { isLoading: true, isSubmitted: false, error: '' })),
+        switchMap((payload) =>
+          _http.post<IApiSuccess<IParticipantRegistration>>('/applications/participant', payload).pipe(
+            tap((response) => {
+              if (isPlatformBrowser(_platformId)) {
+                storeApplication(APPLICATION_STORAGE_KEYS.PARTICIPANT);
+                storeParticipantId(response.data.id);
               }
               patchState(store, { isLoading: false, isSubmitted: true, isAlreadyApplied: true });
             }),

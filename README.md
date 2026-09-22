@@ -1,6 +1,6 @@
 # FIKIRI Innovation Festival 2026
 
-Angular web application for FIF 2026, the FIKIRI Innovation Festival taking place in Kinshasa on 14–15 October 2026.
+Angular web application for FIF 2026, the FIKIRI Innovation Festival taking place in Kinshasa on 25–27 November 2026.
 
 The festival connects Congolese solutions and digital talent with the organizations that can buy, finance, recruit, and deploy them.
 

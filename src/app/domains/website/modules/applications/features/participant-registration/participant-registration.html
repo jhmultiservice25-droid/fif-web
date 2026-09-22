@@ -1,0 +1,181 @@
+<app-application-hero
+  eyebrow="FIF 2026 · Participation"
+  heading="S'inscrire comme participant"
+  description="Choisissez d’abord vos jours de présence et les activités auxquelles vous souhaitez participer ou assister." />
+
+<section class="min-h-[40vh] bg-gray-50 px-6 py-16 sm:px-8 lg:px-16 lg:py-20">
+  <div class="mx-auto max-w-6xl">
+    @if (store.isSubmitted()) {
+      <div class="rounded-2xl border border-emerald-200 bg-white p-8 text-center shadow-sm sm:p-12">
+        <mat-icon class="text-emerald-600! size-14!" svgIcon="circle-check" />
+        <h2 class="mt-4 text-2xl font-bold text-gray-950">Inscription enregistrée</h2>
+        <p class="mx-auto mt-3 max-w-xl text-gray-600">
+          Vos jours et activités ont bien été enregistrés pour le FIKIRI Innovation Festival 2026.
+        </p>
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
+          <a mat-flat-button routerLink="/applications/badge">Générer mon badge</a>
+          <a mat-button routerLink="/">Retour à l'accueil</a>
+        </div>
+      </div>
+    } @else if (store.isAlreadyApplied()) {
+      <div class="rounded-2xl border border-primary-200 bg-white p-8 text-center shadow-sm sm:p-12">
+        <mat-icon class="text-primary-600! size-14!" svgIcon="circle-check" />
+        <h2 class="mt-4 text-2xl font-bold text-gray-950">Vous êtes déjà inscrit</h2>
+        <p class="mx-auto mt-3 max-w-xl text-gray-600">
+          Une inscription participant a déjà été enregistrée depuis cet appareil.
+        </p>
+        <a mat-flat-button routerLink="/" class="mt-7">Retour à l'accueil</a>
+      </div>
+    } @else {
+      @if (store.error()) {
+        <app-message class="mb-6" title="Inscription impossible" [message]="store.error()" (dismissed)="store.clearError()" />
+      }
+
+      <mat-stepper linear class="rounded-2xl border border-gray-200 bg-white p-2 shadow-sm sm:p-6">
+        <mat-step [completed]="attendanceValid()" label="Jours & activités">
+          <div class="py-7">
+            <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div class="max-w-3xl">
+                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary-700">25–27 novembre 2026</p>
+                <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-950">Choisissez vos jours de participation</h2>
+                <p class="mt-3 text-gray-600">
+                  Vous pouvez sélectionner un, deux ou les trois jours. Pour chaque jour choisi, sélectionnez au moins une activité.
+                </p>
+              </div>
+              <button mat-stroked-button type="button" (click)="selectAllDays()">Participer aux 3 jours</button>
+            </div>
+
+            <div class="mt-10 space-y-5">
+              @for (day of days; track day.id) {
+                <article
+                  class="overflow-hidden rounded-2xl border bg-white transition"
+                  [class.border-primary-500]="daySelected(day.id)"
+                  [class.border-gray-200]="!daySelected(day.id)">
+                  <div class="grid gap-5 p-6 lg:grid-cols-[1fr_auto] lg:items-center">
+                    <div>
+                      <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary-700">{{ day.date }}</p>
+                      <h3 class="mt-2 text-xl font-bold text-gray-950">{{ day.title }}</h3>
+                      @if (daySelected(day.id)) {
+                        <p class="mt-2 text-sm font-semibold text-emerald-700">
+                          Jour sélectionné · {{ selectedActivityCount(day.id) }} activité(s) choisie(s)
+                        </p>
+                      }
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        (click)="toggleExpandedDay(day.id)">
+                        {{ dayExpanded(day.id) ? 'Masquer les activités' : 'Voir les activités' }}
+                      </button>
+                      <button
+                        mat-flat-button
+                        type="button"
+                        (click)="toggleDay(day.id)">
+                        {{ daySelected(day.id) ? 'Retirer ce jour' : 'Participer ce jour' }}
+                      </button>
+                    </div>
+                  </div>
+
+                  @if (dayExpanded(day.id)) {
+                    <div class="border-t border-gray-200 bg-gray-50 p-5 sm:p-6">
+                      <p class="mb-4 text-sm font-semibold text-gray-700">Choisissez les activités auxquelles vous participerez :</p>
+                      <div class="grid gap-3 md:grid-cols-2">
+                        @for (activity of day.activities; track activity.id) {
+                          <button
+                            type="button"
+                            class="rounded-xl border p-4 text-left transition"
+                            [class.border-primary-500]="activitySelected(activity.id)"
+                            [class.bg-primary-50]="activitySelected(activity.id)"
+                            [class.border-gray-200]="!activitySelected(activity.id)"
+                            [class.bg-white]="!activitySelected(activity.id)"
+                            (click)="toggleActivity(day.id, activity.id)">
+                            <div class="flex items-start justify-between gap-4">
+                              <div>
+                                <p class="text-xs font-bold text-primary-700">{{ activity.time }}</p>
+                                <h4 class="mt-1 font-bold text-gray-950">{{ activity.title }}</h4>
+                                <p class="mt-2 text-sm leading-6 text-gray-600">{{ activity.description }}</p>
+                                @if (activity.speakers?.length) {
+                                  <p class="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-gray-500">Intervenants</p>
+                                  <p class="mt-1 text-sm font-medium text-gray-800">{{ activity.speakers?.join(' · ') }}</p>
+                                } @else {
+                                  <p class="mt-3 text-xs font-medium text-gray-500">Intervenant(s) : à confirmer</p>
+                                }
+                              </div>
+                              @if (activitySelected(activity.id)) {
+                                <mat-icon class="text-primary-700!" svgIcon="circle-check" />
+                              }
+                            </div>
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </article>
+              }
+            </div>
+
+            @if (selectedDays().length > 0 && !attendanceValid()) {
+              <p class="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-900">
+                Sélectionnez au moins une activité pour chaque jour choisi.
+              </p>
+            }
+
+            <div class="mt-8 flex justify-end">
+              <button mat-flat-button matStepperNext type="button" [disabled]="!attendanceValid()">
+                Continuer vers mon identité
+              </button>
+            </div>
+          </div>
+        </mat-step>
+
+        <mat-step [completed]="identityForm().valid()" label="Identité">
+          <form (submit)="onSubmit(); $event.preventDefault()" class="grid gap-5 py-7 sm:grid-cols-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Nom</mat-label>
+              <input matInput [formField]="identityForm.lastName" autocomplete="family-name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Postnom</mat-label>
+              <input matInput [formField]="identityForm.postnom" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Prénom</mat-label>
+              <input matInput [formField]="identityForm.firstName" autocomplete="given-name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Ville</mat-label>
+              <input matInput [formField]="identityForm.city" autocomplete="address-level2" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>WhatsApp</mat-label>
+              <input matInput type="tel" [formField]="identityForm.whatsapp" autocomplete="tel" placeholder="+243…" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Adresse e-mail</mat-label>
+              <input matInput type="email" [formField]="identityForm.email" autocomplete="email" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="sm:col-span-2">
+              <mat-label>Organisation / institution (facultatif)</mat-label>
+              <input matInput [formField]="identityForm.organization" />
+            </mat-form-field>
+
+            <div class="sm:col-span-2 rounded-xl border border-primary-200 bg-primary-50 p-5">
+              <p class="font-semibold text-gray-950">Votre sélection</p>
+              <p class="mt-1 text-sm text-gray-600">
+                {{ selectedDays().length }} jour(s) · {{ selectedActivities().length }} activité(s)
+              </p>
+            </div>
+
+            <div class="sm:col-span-2 flex justify-between">
+              <button mat-button matStepperPrevious type="button">Retour aux activités</button>
+              <button mat-flat-button type="submit" [disabled]="identityForm().invalid() || store.isLoading()">
+                {{ store.isLoading() ? 'Inscription…' : 'Confirmer mon inscription' }}
+              </button>
+            </div>
+          </form>
+        </mat-step>
+      </mat-stepper>
+    }
+  </div>
+</section>
