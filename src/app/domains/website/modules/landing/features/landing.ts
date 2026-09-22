@@ -3,9 +3,10 @@ import { Hero } from '../ui/hero/hero';
 import { Concept } from '../ui/concept/concept';
 import { Experiences } from '../ui/experiences/experiences';
 import { Impact } from '../ui/impact/impact';
+import { Program } from '../ui/program/program';
 
 @Component({
-  imports: [Hero, Concept, Experiences, Impact],
+  imports: [Hero, Concept, Experiences, Program, Impact],
   templateUrl: './landing.html'
 })
 export default class Landing {}
