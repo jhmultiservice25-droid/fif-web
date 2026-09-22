@@ -18,6 +18,11 @@ const routes: Routes = [
       )
   },
   {
+    path: 'badge',
+    loadComponent: () =>
+      import('./features/participant-badge/participant-badge').then((m) => m.ParticipantBadge)
+  },
+  {
     path: 'volunteer',
     title: 'Devenir volontaire',
     loadComponent: () =>
