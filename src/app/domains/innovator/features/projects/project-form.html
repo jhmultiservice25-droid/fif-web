@@ -75,6 +75,9 @@
         } @else if (!isNew()) {
           <div class="mt-4 flex flex-wrap items-center gap-3">
             <input type="file" accept="video/*" (change)="onPitchVideoSelected($event)" />
+            @if (pitchVideoError()) {
+              <p class="w-full text-sm font-medium text-red-700">{{ pitchVideoError() }}</p>
+            }
             <button matButton="outlined" type="button" [disabled]="!pitchVideo() || isUploadingVideo()" (click)="uploadPitchVideo()">
               {{ isUploadingVideo() ? 'Envoi…' : 'Ajouter la vidéo' }}
             </button>
