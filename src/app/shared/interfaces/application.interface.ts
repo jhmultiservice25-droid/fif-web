@@ -58,7 +58,7 @@ export interface IParticipantRegistrationInput {
   city: string;
   whatsapp: string;
   email: string;
-  organization?: string;
+  organization?: string | null;
   selectedDays: string[];
   selectedActivities: string[];
 }
