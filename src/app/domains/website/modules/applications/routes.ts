@@ -10,6 +10,14 @@ const routes: Routes = [
       )
   },
   {
+    path: 'participant',
+    title: 'Inscription participant',
+    loadComponent: () =>
+      import('./features/participant-registration/participant-registration').then(
+        (component) => component.ParticipantRegistration
+      )
+  },
+  {
     path: 'volunteer',
     title: 'Devenir volontaire',
     loadComponent: () =>
@@ -17,7 +25,7 @@ const routes: Routes = [
         (component) => component.VolunteerApplication
       )
   },
-  { path: '', pathMatch: 'full', redirectTo: 'volunteer' }
+  { path: '', pathMatch: 'full', redirectTo: 'participant' }
 ];
 
 export default routes;
