@@ -27,14 +27,54 @@ export const PROFESSIONAL_SITUATION_OPTIONS: readonly {
 ];
 
 export const VOLUNTEER_TEAMS: readonly IVolunteerTeam[] = [
-  { id: 'accueil', name: 'Accueil & Orientation' },
-  { id: 'registration', name: 'Registration & Badges' },
-  { id: 'village', name: 'Innovation Village' },
-  { id: 'programme', name: 'Programme, Salles & Masterclasses' },
-  { id: 'b2b', name: 'B2B & Networking' },
-  { id: 'communication', name: 'Communication & Social Media' },
-  { id: 'studio', name: 'Photo, Vidéo & FIKIRI Studio' },
-  { id: 'tech', name: 'Tech Support' },
-  { id: 'protocole', name: 'Protocole & VIP' },
-  { id: 'logistique', name: 'Logistique & Opérations' }
+  {
+    id: 'accueil',
+    name: 'Accueil & Orientation',
+    description: 'Accueillir, informer et orienter les participants vers les salles, stands, activités et services.'
+  },
+  {
+    id: 'registration',
+    name: 'Registration & Badges',
+    description: 'Assurer le check-in, les badges, l’information d’accès et la fluidité des files.'
+  },
+  {
+    id: 'village',
+    name: 'Innovation Village',
+    description: 'Accompagner les exposants, les démonstrations, les visiteurs et les flux dans le Village.'
+  },
+  {
+    id: 'programme',
+    name: 'Programme, Salles & Masterclasses',
+    description: 'Assister les salles, les speakers, les modérateurs, les ateliers et le respect du programme.'
+  },
+  {
+    id: 'b2b',
+    name: 'B2B & Networking',
+    description: 'Orienter les rendez-vous B2B, faciliter les rencontres et appuyer les espaces de networking.'
+  },
+  {
+    id: 'communication',
+    name: 'Communication & Social Media',
+    description: 'Appuyer la couverture en direct, les réseaux sociaux, les contenus et l’information du public.'
+  },
+  {
+    id: 'studio',
+    name: 'Photo, Vidéo & FIKIRI Studio',
+    description: 'Appuyer les prises de vue, interviews, podcasts et contenus produits pendant le Festival.'
+  },
+  {
+    id: 'tech',
+    name: 'Tech Support',
+    description: 'Assister le QR/check-in, les salles, écrans, microphones, Wi-Fi, AV et besoins techniques.'
+  },
+  {
+    id: 'protocole',
+    name: 'Protocole & VIP',
+    description: 'Accueillir et accompagner les VIP, gérer les parcours, les zones réservées et le protocole.'
+  },
+  {
+    id: 'logistique',
+    name: 'Logistique & Opérations',
+    description: 'Appuyer les flux, le mobilier, les consommables, les mouvements, les réapprovisionnements et le site.'
+  }
 ];
