@@ -1,4 +1,4 @@
-import { httpResource } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Component, effect, inject, input, OnInit, signal } from '@angular/core';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,6 +44,10 @@ export default class ProjectForm implements OnInit {
   protected readonly store = inject(InnovatorStore);
   protected readonly catalogStore = inject(MarketplaceCatalogStore);
   private readonly router = inject(Router);
+  private readonly http = inject(HttpClient);
+  protected readonly pitchVideo = signal<File | null>(null);
+  protected readonly hasPitchVideo = signal(false);
+  protected readonly isUploadingVideo = signal(false);
 
   protected readonly projectResource = httpResource<IApiSuccess<IProject>>(() => {
     const projectId = this.id();
@@ -73,6 +77,7 @@ export default class ProjectForm implements OnInit {
           stage: project.stage,
           publicationConsent: project.publicationConsent
         });
+        this.hasPitchVideo.set(Boolean(project.pitchVideoPath));
       }
     });
 
@@ -91,6 +96,31 @@ export default class ProjectForm implements OnInit {
 
   ngOnInit(): void {
     this.catalogStore.load().subscribe();
+  }
+
+
+  protected onPitchVideoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.pitchVideo.set(input.files?.[0] ?? null);
+  }
+
+  protected uploadPitchVideo(): void {
+    const projectId = this.id();
+    const file = this.pitchVideo();
+    if (!projectId || projectId === 'nouveau' || !file) return;
+
+    const formData = new FormData();
+    formData.append('video', file);
+    this.isUploadingVideo.set(true);
+    this.http.post(`/me/projects/${encodeURIComponent(projectId)}/pitch-video`, formData).subscribe({
+      next: () => {
+        this.hasPitchVideo.set(true);
+        this.isUploadingVideo.set(false);
+        this.pitchVideo.set(null);
+        this.projectResource.reload();
+      },
+      error: () => this.isUploadingVideo.set(false)
+    });
   }
 
   protected save(asSubmitted = false): void {
