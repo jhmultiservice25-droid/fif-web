@@ -26,7 +26,6 @@ export interface ICommitteeApplicationForm {
     motivation: string;
     experience: string;
     availability: string;
-    cv: File | string;
   };
 }
 
