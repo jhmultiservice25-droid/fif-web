@@ -22,7 +22,7 @@ export interface IApplicantIdentity {
   email: string;
 }
 
-/** Multipart form fields accepted by POST /applications/committee. */
+/** JSON body accepted by POST /applications/committee. */
 export interface ICommitteeApplicationInput extends IApplicantIdentity {
   primaryJobId: string;
   secondaryJobId?: string;
@@ -34,7 +34,6 @@ export interface ICommitteeApplicationInput extends IApplicantIdentity {
   experience: string;
   availability: string;
   linkedin?: string;
-  cv: File;
 }
 
 /** JSON body accepted by POST /applications/volunteer. */
