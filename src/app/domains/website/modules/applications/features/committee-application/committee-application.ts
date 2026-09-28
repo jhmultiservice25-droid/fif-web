@@ -81,8 +81,7 @@ export class CommitteeApplication {
     commitment: {
       motivation: '',
       experience: '',
-      availability: '',
-      cv: ''
+      availability: ''
     }
   });
 
@@ -121,37 +120,10 @@ export class CommitteeApplication {
     required(schemaPath.commitment.experience);
     minLength(schemaPath.commitment.experience, 10);
     required(schemaPath.commitment.availability);
-    validate(schemaPath.commitment.cv, ({ value }) => {
-      const file = value();
-      if (typeof file === 'string') {
-        return { kind: 'required', message: 'Le CV PDF est obligatoire.' };
-      }
-
-      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-      return !isPdf || file.size > 5 * 1024 * 1024
-        ? { kind: 'invalidFile', message: 'Choisissez un PDF de 5 Mo maximum.' }
-        : undefined;
-    });
-  });
-
-  protected readonly selectedFileName = computed(() => {
-    const cv = this.applicationModel().commitment.cv;
-    return typeof cv === 'string' ? '' : cv.name;
   });
 
   constructor() {
     afterNextRender(() => this.store.initialize('COMMITTEE'));
-  }
-
-  protected onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.item(0) ?? '';
-
-    this.applicationModel.update((model) => ({
-      ...model,
-      commitment: { ...model.commitment, cv: file }
-    }));
-    this.applicationForm.commitment.cv().markAsTouched();
   }
 
   protected onBirthDateSelected(date: Date | null): void {
@@ -192,7 +164,6 @@ export class CommitteeApplication {
   protected onSubmit(): void {
     submit(this.applicationForm, async (formState) => {
       const { identity, profile, commitment } = formState().value();
-      if (typeof commitment.cv === 'string') return;
 
       this.store.submitCommittee({
         ...identity,
@@ -203,8 +174,7 @@ export class CommitteeApplication {
         educationLevel: profile.educationLevel as ICommitteeApplicationInput['educationLevel'],
         professionalSituation: profile.professionalSituation as ICommitteeApplicationInput['professionalSituation'],
         secondaryJobId: profile.secondaryJobId || undefined,
-        linkedin: profile.linkedin || undefined,
-        cv: commitment.cv
+        linkedin: profile.linkedin || undefined
       });
     });
   }
