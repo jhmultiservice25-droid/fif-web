@@ -71,16 +71,8 @@ export const ApplicationStore = signalStore(
       pipe(
         filter(() => !isAlreadyApplied()),
         tap(() => patchState(store, { isLoading: true, isSubmitted: false, error: '' })),
-        switchMap((payload) => {
-          const formData = new FormData();
-
-          Object.entries(payload).forEach(([key, value]) => {
-            if (value !== undefined && value !== '') {
-              formData.append(key, value instanceof File ? value : String(value));
-            }
-          });
-
-          return _http.post<IApiSuccess<ICommitteeApplication>>('/applications/committee', formData).pipe(
+        switchMap((payload) =>
+          _http.post<IApiSuccess<ICommitteeApplication>>('/applications/committee', payload).pipe(
             tap(() => {
               if (isPlatformBrowser(_platformId)) {
                 storeApplication(APPLICATION_STORAGE_KEYS.COMMITTEE);
@@ -91,8 +83,8 @@ export const ApplicationStore = signalStore(
               patchState(store, { isLoading: false, error: getErrorMessage(error) });
               return of(null);
             })
-          );
-        })
+          )
+        )
       )
     ),
     submitVolunteer: rxMethod<IVolunteerApplicationInput>(
