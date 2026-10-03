@@ -5,17 +5,15 @@ import { catchError, of, pipe, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { IApiSuccess } from '@/app/shared/interfaces';
-import { AuthStore } from './auth.store';
 import { IRegisterKind, IRegisterPayload, IRegisterRequestState, IRegisterResponse } from '../interfaces/register.interface';
 
 export const RegisterStore = signalStore(
   withState<IRegisterRequestState>({ isLoading: false, error: '' }),
   withProps(() => ({
     _http: inject(HttpClient),
-    _router: inject(Router),
-    _authStore: inject(AuthStore)
+    _router: inject(Router)
   })),
-  withMethods(({ _http, _authStore, _router, ...store }) => ({
+  withMethods(({ _http, _router, ...store }) => ({
     register: rxMethod<{ kind: IRegisterKind; payload: IRegisterPayload }>(
       pipe(
         tap(() => patchState(store, { isLoading: true, error: '' })),
@@ -23,21 +21,11 @@ export const RegisterStore = signalStore(
           const path = kind === 'organization' ? '/register/organization' : '/register/innovator';
 
           return _http.post<IApiSuccess<IRegisterResponse>>(path, payload).pipe(
-            switchMap(() =>
-              _http.post<{ user: { id: string; email: string; name: string; role: string } }>(
-                '/api/auth/sign-in/email',
-                { email: payload.email, password: payload.password, rememberMe: true }
-              )
-            ),
-            tap(({ user }) => {
+            tap(() => {
               patchState(store, { isLoading: false });
-              _authStore.setUser({
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                role: user.role as 'ORGANIZATION' | 'INNOVATOR' | 'ADMIN'
+              void _router.navigate(['/auth/verification-email'], {
+                queryParams: { email: payload.email.trim().toLowerCase() }
               });
-              _router.navigateByUrl(_authStore.homeRoute());
             }),
             catchError((error) => {
               const message =
