@@ -24,6 +24,11 @@ const routes: Routes = [
         data: { kind: 'innovator' }
       },
       {
+        path: 'verification-email',
+        title: 'Confirmer votre e-mail',
+        loadComponent: () => import('./features/verify-email/verify-email').then((c) => c.AuthVerifyEmail)
+      },
+      {
         path: 'connexion',
         title: 'Connexion',
         loadComponent: () => import('./features/sign-in/sign-in').then((c) => c.AuthSignIn)
